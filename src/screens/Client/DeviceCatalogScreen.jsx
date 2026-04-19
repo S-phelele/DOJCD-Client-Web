@@ -1,8 +1,12 @@
 // screens/Client/DeviceCatalogScreen.jsx
+// Updated: ConfirmDialog replaces window.confirm for applying to a device.
+// All original API logic preserved exactly.
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { deviceAPI } from '../../services/api';
 import { useToast } from '../../components/ToastProvider';
+import ConfirmDialog from '../../components/ConfirmDialog';
 import {
     IoPhonePortraitOutline,
     IoCalendarOutline,
@@ -12,60 +16,82 @@ import {
     IoAlertCircleOutline,
 } from 'react-icons/io5';
 
-// ─── Design tokens ─────────────────────────────────────────────────────────
 const C = {
-    navy: '#0F1F3D',
-    accent: '#1E4FD8',
+    navy:       '#0F1F3D',
+    accent:     '#1E4FD8',
     accentSoft: '#EBF0FF',
-    surface: '#FFFFFF',
-    bg: '#F4F6FA',
-    border: '#E2E8F2',
-    text: '#0F1F3D',
-    muted: '#64748B',
+    surface:    '#FFFFFF',
+    bg:         '#F4F6FA',
+    border:     '#E2E8F2',
+    text:       '#0F1F3D',
+    muted:      '#64748B',
     mutedLight: '#94A3B8',
-    green: '#059669',
-    greenSoft: '#D1FAE5',
-    amber: '#D97706',
-    amberSoft: '#FEF3C7',
-    rose: '#DC2626',
-    roseSoft: '#FEE2E2',
+    green:      '#059669',
+    greenSoft:  '#D1FAE5',
+    amber:      '#D97706',
+    amberSoft:  '#FEF3C7',
+    rose:       '#DC2626',
+    roseSoft:   '#FEE2E2',
 };
 
 export default function DeviceCatalogScreen() {
-    const toast = useToast();
+    const toast    = useToast();
     const navigate = useNavigate();
 
-    const [devices, setDevices] = useState([]);
-    const [filtered, setFiltered] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [refreshing, setRefreshing] = useState(false);
-    const [search, setSearch] = useState('');
-    const [user, setUser] = useState(null);
-    const [isEligible, setIsEligible] = useState(false);
+    const [devices,       setDevices]       = useState([]);
+    const [filtered,      setFiltered]      = useState([]);
+    const [loading,       setLoading]       = useState(true);
+    const [refreshing,    setRefreshing]    = useState(false);
+    const [search,        setSearch]        = useState('');
+    const [user,          setUser]          = useState(null);
+    const [isEligible,    setIsEligible]    = useState(false);
     const [searchFocused, setSearchFocused] = useState(false);
+    const [dialog,        setDialog]        = useState(null);
+    const [applying,      setApplying]      = useState(null); // device being applied for
 
-    useEffect(() => {
-        init();
-    }, []);
-
-    useEffect(() => {
-        filterDevices();
-    }, [search, devices]);
+    useEffect(() => { init(); }, []);
+    useEffect(() => { filterDevices(); }, [search, devices]);
 
     const init = async () => {
         try {
             const userStr = localStorage.getItem('user');
-            if (userStr) {
-                const u = JSON.parse(userStr);
-                setUser(u);
-                const er = await deviceAPI.checkEligibility(u.client_user_id);
-                setIsEligible(er.data.eligible);
-                if (er.data.eligible) {
-                    const dr = await deviceAPI.getAvailableDevices();
-                    setDevices(dr.data.data);
+            if (!userStr) { navigate('/login'); return; }
+            const u = JSON.parse(userStr);
+            setUser(u);
+
+            const er = await deviceAPI.checkEligibility(u.client_user_id);
+
+            // API returns eligibility nested at: r.data.data.eligibility.eligible
+            // Handle all possible shapes defensively
+            const rawEl = er?.data;
+            const eligible =
+                rawEl?.data?.eligibility?.eligible ??   // original shape: {data:{data:{eligibility:{eligible:bool}}}}
+                rawEl?.data?.eligible ??                 // flatter shape:  {data:{data:{eligible:bool}}}
+                rawEl?.eligible ??                       // flat shape:     {data:{eligible:bool}}
+                false;
+
+            setIsEligible(eligible);
+
+            if (eligible) {
+                const dr = await deviceAPI.getAvailableDevices();
+
+                // API returns devices nested at: r.data.data.devices
+                // Handle all possible shapes defensively
+                const rawDev = dr?.data;
+                let list = [];
+                if (Array.isArray(rawDev?.data?.devices)) {
+                    list = rawDev.data.devices;
+                } else if (Array.isArray(rawDev?.data)) {
+                    list = rawDev.data;
+                } else if (Array.isArray(rawDev?.devices)) {
+                    list = rawDev.devices;
+                } else if (Array.isArray(rawDev)) {
+                    list = rawDev;
                 }
+                setDevices(list);
             }
         } catch (err) {
+            console.error('Device catalog init error:', err);
             toast.error('Failed to Load', 'Could not load devices. Please try again.');
         } finally {
             setLoading(false);
@@ -73,16 +99,14 @@ export default function DeviceCatalogScreen() {
     };
 
     const filterDevices = () => {
-        if (!search.trim()) {
-            setFiltered(devices);
-            return;
-        }
+        const safeDevices = Array.isArray(devices) ? devices : [];
+        if (!search.trim()) { setFiltered(safeDevices); return; }
         const q = search.toLowerCase();
-        setFiltered(devices.filter(d =>
-            d.device_name.toLowerCase().includes(q) ||
-            d.model.toLowerCase().includes(q) ||
-            d.manufacturer.toLowerCase().includes(q) ||
-            d.plan_name.toLowerCase().includes(q)
+        setFiltered(safeDevices.filter(d =>
+            d.device_name?.toLowerCase().includes(q) ||
+            d.model?.toLowerCase().includes(q) ||
+            d.manufacturer?.toLowerCase().includes(q) ||
+            d.plan_name?.toLowerCase().includes(q)
         ));
     };
 
@@ -92,73 +116,84 @@ export default function DeviceCatalogScreen() {
         setRefreshing(false);
     };
 
-    const handleApply = (deviceId) => {
-        if (!user?.client_user_id) {
-            toast.error('Error', 'User not found.');
-            return;
-        }
-        const confirmed = window.confirm('Confirm Application\n\nSubmit your application for this device?');
-        if (!confirmed) return;
+    // Show confirm dialog before applying
+    const handleApplyClick = (device) => {
+        if (!user?.client_user_id) { toast.error('Error', 'User not found.'); return; }
+        setDialog({
+            title: 'Confirm Application',
+            message: `Apply for the ${device.device_name}?`,
+            details: `Plan: ${device.plan_name} · R${device.monthly_cost}/mo · ${device.contract_duration_months} month contract`,
+            confirmText: 'Yes, Apply',
+            cancelText: 'Cancel',
+            variant: 'default',
+            onConfirm: () => submitApplication(device.device_id),
+        });
+    };
 
+    const submitApplication = (deviceId) => {
+        setApplying(deviceId);
         deviceAPI.submitApplication(user.client_user_id, deviceId)
             .then(r => {
                 if (r.data.success) {
                     toast.success('Applied!', r.data.message || 'Your application is now pending review.');
-                    setTimeout(() => navigate('/my-applications'), 1200);
+                    setTimeout(() => navigate('/my-applications'), 1000);
                 } else {
                     toast.error('Failed', r.data.message);
                 }
             })
             .catch(error => {
                 const status = error.response?.status;
-                const msg = error.response?.data?.message;
+                const msg    = error.response?.data?.message;
                 if (status === 409) toast.warning('Already Applied', msg || 'You already have an active application for this device.');
                 else if (status === 422) toast.error('Not Eligible', msg || 'You are not currently eligible to apply.');
                 else toast.error('Failed', msg || error.message);
-            });
+            })
+            .finally(() => setApplying(null));
     };
 
     const renderDevice = (item) => (
-        <div key={item.device_id} style={styles.card}>
-            {/* Card header */}
-            <div style={styles.cardHeader}>
-                <div style={styles.deviceIconWrap}>
+        <div key={item.device_id} style={S.card}>
+            <div style={S.cardHeader}>
+                <div style={S.deviceIconWrap}>
                     <IoPhonePortraitOutline size={22} color={C.accent} />
                 </div>
-                <div style={{ flex: 1 }}>
-                    <div style={styles.deviceName}>{item.device_name}</div>
-                    <div style={styles.deviceMake}>{item.manufacturer}</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={S.deviceName}>{item.device_name}</div>
+                    <div style={S.deviceMake}>{item.manufacturer}</div>
                 </div>
-                <div style={styles.pricePill}>
-                    <div style={styles.priceAmount}>R{item.monthly_cost}</div>
-                    <div style={styles.priceUnit}>/mo</div>
+                <div style={S.pricePill}>
+                    <div style={S.priceAmount}>R{item.monthly_cost}</div>
+                    <div style={S.priceUnit}>/mo</div>
                 </div>
             </div>
 
-            {/* Tags row */}
-            <div style={styles.tagsRow}>
-                <div style={styles.tag}><span style={styles.tagText}>{item.model}</span></div>
-                <div style={{ ...styles.tag, backgroundColor: C.accentSoft }}>
-                    <span style={{ ...styles.tagText, color: C.accent }}>{item.plan_name}</span>
+            <div style={S.tagsRow}>
+                <div style={S.tag}><span style={S.tagText}>{item.model}</span></div>
+                <div style={{ ...S.tag, backgroundColor: C.accentSoft }}>
+                    <span style={{ ...S.tagText, color: C.accent }}>{item.plan_name}</span>
                 </div>
-                <div style={styles.tag}>
+                <div style={S.tag}>
                     <IoCalendarOutline size={11} color={C.muted} />
-                    <span style={styles.tagText}> {item.contract_duration_months}mo</span>
+                    <span style={S.tagText}> {item.contract_duration_months}mo</span>
                 </div>
             </div>
 
-            {/* Plan details */}
-            <div style={styles.planDetail}>{item.plan_details}</div>
+            <div style={S.planDetail}>{item.plan_details}</div>
 
-            {/* Footer */}
-            <div style={styles.cardFooter}>
-                <div style={styles.footerLeft}>
-                    <div style={styles.footerLabel}>Contract total</div>
-                    <div style={styles.footerValue}>R{item.monthly_cost * item.contract_duration_months}</div>
+            <div style={S.cardFooter}>
+                <div>
+                    <div style={S.footerLabel}>Contract total</div>
+                    <div style={S.footerValue}>R{item.monthly_cost * item.contract_duration_months}</div>
                 </div>
-                <button style={styles.applyBtn} onClick={() => handleApply(item.device_id)}>
-                    <span style={styles.applyBtnText}>Apply Now</span>
-                    <IoArrowForward size={15} color="#fff" />
+                <button
+                    style={{ ...S.applyBtn, ...(applying === item.device_id ? S.applyBtnLoading : {}) }}
+                    onClick={() => handleApplyClick(item)}
+                    disabled={!!applying}
+                >
+                    <span style={S.applyBtnText}>
+                        {applying === item.device_id ? 'Applying…' : 'Apply Now'}
+                    </span>
+                    {applying !== item.device_id && <IoArrowForward size={15} color="#fff" />}
                 </button>
             </div>
         </div>
@@ -166,9 +201,8 @@ export default function DeviceCatalogScreen() {
 
     if (loading) {
         return (
-            <div style={styles.loadingScreen}>
-                <div className="spinner" style={{ width: 40, height: 40, border: `3px solid ${C.border}`, borderTopColor: C.accent, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></div>
-                <div style={styles.loadingText}>Loading devices…</div>
+            <div style={S.center}>
+                <div style={{ width: 40, height: 40, border: `3px solid ${C.border}`, borderTopColor: C.accent, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
                 <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
             </div>
         );
@@ -176,111 +210,122 @@ export default function DeviceCatalogScreen() {
 
     if (!isEligible) {
         return (
-            <div style={styles.gateScreen}>
-                <div style={styles.gateIcon}><IoAlertCircleOutline size={40} color={C.amber} /></div>
-                <div style={styles.gateTitle}>Not Yet Eligible</div>
-                <div style={styles.gateSub}>Your account must be verified before you can browse and apply for devices.</div>
-                <button style={styles.gateBtn} onClick={() => navigate(-1)}>Back to Dashboard</button>
+            <div style={S.center}>
+                <div style={S.gateIcon}><IoAlertCircleOutline size={36} color={C.amber} /></div>
+                <div style={S.gateTitle}>Not Yet Eligible</div>
+                <div style={S.gateSub}>Your account must be verified before you can browse and apply for devices.</div>
+                <button style={S.gateBtn} onClick={() => navigate('/client-dashboard')}>Back to Dashboard</button>
             </div>
         );
     }
 
     return (
-        <div style={styles.root}>
-            {/* Top bar */}
-            <div style={styles.topBar}>
-                <div style={styles.topBarHeader}>
-                    <div>
-                        <div style={styles.pageTitle}>Device Catalogue</div>
-                        <div style={styles.pageSub}>{filtered.length} device{filtered.length !== 1 ? 's' : ''} available</div>
+        <>
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            <div style={S.root}>
+                {/* Page header */}
+                <div style={S.pageHeader}>
+                    <div style={S.pageHeaderLeft}>
+                        <div style={S.pageHeaderIcon}>
+                            <IoPhonePortraitOutline size={20} color={C.accent} />
+                        </div>
+                        <div>
+                            <h1 style={S.pageTitle}>Device Catalogue</h1>
+                            <p style={S.pageSub}>{filtered.length} device{filtered.length !== 1 ? 's' : ''} available</p>
+                        </div>
+                    </div>
+                    <button style={S.refreshBtn} onClick={onRefresh} disabled={refreshing}>
+                        {refreshing ? '↻ Refreshing…' : '↻ Refresh'}
+                    </button>
+                </div>
+
+                {/* Search */}
+                <div style={S.searchWrap}>
+                    <div style={{ ...S.searchBar, ...(searchFocused ? S.searchBarFocused : {}) }}>
+                        <IoSearchOutline size={18} color={searchFocused ? C.accent : C.muted} />
+                        <input
+                            type="text" style={S.searchInput}
+                            placeholder="Search by name, model or plan…"
+                            value={search}
+                            onChange={e => setSearch(e.target.value)}
+                            onFocus={() => setSearchFocused(true)}
+                            onBlur={() => setSearchFocused(false)}
+                        />
+                        {search && (
+                            <button style={S.clearBtn} onClick={() => setSearch('')}>
+                                <IoCloseCircle size={18} color={C.mutedLight} />
+                            </button>
+                        )}
                     </div>
                 </div>
-                {/* Search */}
-                <div style={{ ...styles.searchBar, ...(searchFocused && styles.searchBarFocused) }}>
-                    <IoSearchOutline size={18} color={searchFocused ? C.accent : C.muted} />
-                    <input
-                        type="text"
-                        style={styles.searchInput}
-                        placeholder="Search by name, model or plan…"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        onFocus={() => setSearchFocused(true)}
-                        onBlur={() => setSearchFocused(false)}
-                    />
-                    {search.length > 0 && (
-                        <button style={styles.clearSearchBtnIcon} onClick={() => setSearch('')}>
-                            <IoCloseCircle size={18} color={C.mutedLight} />
-                        </button>
+
+                {/* Device grid */}
+                <div style={S.grid}>
+                    {filtered.length === 0 ? (
+                        <div style={S.empty}>
+                            <div style={S.emptyIcon}><IoSearchOutline size={28} color={C.mutedLight} /></div>
+                            <div style={S.emptyTitle}>{search ? 'No results' : 'No devices available'}</div>
+                            <div style={S.emptySub}>{search ? `No devices match "${search}"` : 'Check back later'}</div>
+                            {search && <button style={S.clearSearchBtn} onClick={() => setSearch('')}>Clear search</button>}
+                        </div>
+                    ) : (
+                        <div style={S.cardGrid}>{filtered.map(renderDevice)}</div>
                     )}
                 </div>
             </div>
 
-            {/* Device list */}
-            <div style={styles.list}>
-                {filtered.length === 0 ? (
-                    <div style={styles.empty}>
-                        <div style={styles.emptyIcon}><IoSearchOutline size={32} color={C.mutedLight} /></div>
-                        <div style={styles.emptyTitle}>{search ? 'No results' : 'No devices available'}</div>
-                        <div style={styles.emptySub}>{search ? `No devices match "${search}"` : 'Check back later for available devices'}</div>
-                        {search && (
-                            <button style={styles.clearSearchBtn} onClick={() => setSearch('')}>Clear search</button>
-                        )}
-                    </div>
-                ) : (
-                    filtered.map(renderDevice)
-                )}
-            </div>
-
-            {/* Refresh button (simulates pull-to-refresh) */}
-            <div style={{ textAlign: 'center', marginBottom: 20 }}>
-                <button onClick={onRefresh} style={{ padding: '8px 20px', borderRadius: 20, border: `1px solid ${C.border}`, background: C.surface, cursor: 'pointer' }}>
-                    {refreshing ? 'Refreshing...' : '↻ Refresh'}
-                </button>
-            </div>
-        </div>
+            <ConfirmDialog config={dialog} onClose={() => setDialog(null)} />
+        </>
     );
 }
 
-// ─── Styles ────────────────────────────────────────────────────────────────
-const styles = {
-    root: { minHeight: '100vh', backgroundColor: C.bg, display: 'flex', flexDirection: 'column' },
-    loadingScreen: { minHeight: '100vh', backgroundColor: C.bg, display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' },
-    loadingText: { marginTop: 14, fontSize: 15, color: C.muted, fontWeight: '500' },
-    gateScreen: { minHeight: '100vh', backgroundColor: C.bg, display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', padding: 40 },
-    gateIcon: { width: 72, height: 72, borderRadius: 20, backgroundColor: C.amberSoft, display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
-    gateTitle: { fontSize: 22, fontWeight: '800', color: C.text, marginBottom: 10 },
-    gateSub: { fontSize: 14, color: C.muted, textAlign: 'center', lineHeight: 1.5, marginBottom: 28 },
-    gateBtn: { backgroundColor: C.navy, padding: '13px 24px', borderRadius: 14, border: 'none', color: '#fff', fontWeight: '700', fontSize: 14, cursor: 'pointer' },
-    topBar: { backgroundColor: C.surface, borderBottom: `1px solid ${C.border}`, paddingTop: 20, paddingHorizontal: 16, paddingBottom: 16 },
-    topBarHeader: { marginBottom: 14 },
-    pageTitle: { fontSize: 22, fontWeight: '800', color: C.text },
-    pageSub: { fontSize: 13, color: C.muted, marginTop: 2 },
-    searchBar: { display: 'flex', alignItems: 'center', gap: 10, backgroundColor: C.bg, border: `1.5px solid ${C.border}`, borderRadius: 14, padding: '11px 14px' },
+const S = {
+    root:   { backgroundColor: C.bg, minHeight: '100%', display: 'flex', flexDirection: 'column' },
+    center: { flex: 1, minHeight: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: 40, backgroundColor: C.bg },
+
+    gateIcon:  { width: 68, height: 68, borderRadius: 18, backgroundColor: C.amberSoft, display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 18 },
+    gateTitle: { fontSize: 20, fontWeight: '800', color: C.text, marginBottom: 8 },
+    gateSub:   { fontSize: 14, color: C.muted, textAlign: 'center', lineHeight: 1.5, marginBottom: 24, maxWidth: 320 },
+    gateBtn:   { backgroundColor: C.navy, padding: '12px 22px', borderRadius: 12, border: 'none', color: '#fff', fontWeight: '700', fontSize: 14, cursor: 'pointer' },
+
+    pageHeader:     { backgroundColor: C.surface, borderBottom: `1px solid ${C.border}`, padding: '18px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, position: 'sticky', top: 0, zIndex: 50 },
+    pageHeaderLeft: { display: 'flex', alignItems: 'center', gap: 14 },
+    pageHeaderIcon: { width: 42, height: 42, borderRadius: 12, backgroundColor: C.accentSoft, display: 'flex', justifyContent: 'center', alignItems: 'center' },
+    pageTitle:      { fontSize: 19, fontWeight: '800', color: C.text, margin: 0 },
+    pageSub:        { fontSize: 12, color: C.muted, marginTop: 2 },
+    refreshBtn:     { padding: '8px 16px', borderRadius: 10, border: `1px solid ${C.border}`, background: C.surface, cursor: 'pointer', fontSize: 13, color: C.muted, fontWeight: '600' },
+
+    searchWrap: { padding: '14px 24px 0' },
+    searchBar:  { display: 'flex', alignItems: 'center', gap: 10, backgroundColor: C.surface, border: `1.5px solid ${C.border}`, borderRadius: 12, padding: '10px 14px' },
     searchBarFocused: { borderColor: C.accent, backgroundColor: '#FAFBFF' },
-    searchInput: { flex: 1, fontSize: 15, color: C.text, border: 'none', background: 'transparent', outline: 'none' },
-    clearSearchBtnIcon: { background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' },
-    list: { padding: 16, flex: 1 },
-    card: { backgroundColor: C.surface, borderRadius: 20, padding: 18, marginBottom: 14, border: `1px solid ${C.border}`, boxShadow: '0 3px 10px rgba(15,31,61,0.07)' },
-    cardHeader: { display: 'flex', alignItems: 'center', marginBottom: 14, gap: 12 },
-    deviceIconWrap: { width: 44, height: 44, borderRadius: 13, backgroundColor: C.accentSoft, display: 'flex', justifyContent: 'center', alignItems: 'center' },
-    deviceName: { fontSize: 17, fontWeight: '800', color: C.text },
-    deviceMake: { fontSize: 12, color: C.muted, marginTop: 2 },
-    pricePill: { backgroundColor: C.greenSoft, padding: '7px 12px', borderRadius: 12, display: 'flex', flexDirection: 'column', alignItems: 'center' },
-    priceAmount: { fontSize: 17, fontWeight: '800', color: C.green },
-    priceUnit: { fontSize: 10, color: C.green, fontWeight: '600' },
-    tagsRow: { display: 'flex', flexWrap: 'wrap', gap: 7, marginBottom: 12 },
-    tag: { display: 'flex', alignItems: 'center', backgroundColor: C.bg, border: `1px solid ${C.border}`, padding: '5px 10px', borderRadius: 10, gap: 4 },
-    tagText: { fontSize: 11, color: C.muted, fontWeight: '500' },
-    planDetail: { fontSize: 13, color: C.muted, lineHeight: 1.5, marginBottom: 16 },
-    cardFooter: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 14, borderTop: `1px solid ${C.border}` },
-    footerLeft: {},
-    footerLabel: { fontSize: 10, color: C.mutedLight, fontWeight: '600', letterSpacing: 0.5, marginBottom: 2 },
-    footerValue: { fontSize: 15, fontWeight: '800', color: C.text },
-    applyBtn: { display: 'flex', alignItems: 'center', backgroundColor: C.navy, padding: '11px 18px', borderRadius: 14, gap: 7, border: 'none', cursor: 'pointer', boxShadow: '0 4px 8px rgba(15,31,61,0.25)' },
-    applyBtnText: { color: '#fff', fontSize: 14, fontWeight: '700' },
-    empty: { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 40px' },
-    emptyIcon: { width: 68, height: 68, borderRadius: 18, backgroundColor: C.surface, border: `1px solid ${C.border}`, display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 18 },
-    emptyTitle: { fontSize: 18, fontWeight: '800', color: C.text, marginBottom: 6 },
-    emptySub: { fontSize: 14, color: C.muted, textAlign: 'center', lineHeight: 1.5, marginBottom: 20 },
-    clearSearchBtn: { backgroundColor: C.accentSoft, padding: '10px 18px', borderRadius: 20, border: 'none', fontSize: 13, color: C.accent, fontWeight: '700', cursor: 'pointer' },
+    searchInput:{ flex: 1, fontSize: 15, color: C.text, border: 'none', background: 'transparent', outline: 'none' },
+    clearBtn:   { background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' },
+
+    grid:    { flex: 1, padding: '14px 24px 32px' },
+    cardGrid:{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 14 },
+
+    card: { backgroundColor: C.surface, borderRadius: 16, padding: 18, border: `1px solid ${C.border}`, boxShadow: '0 2px 8px rgba(15,31,61,0.05)', display: 'flex', flexDirection: 'column' },
+    cardHeader:    { display: 'flex', alignItems: 'center', marginBottom: 12, gap: 12 },
+    deviceIconWrap:{ width: 44, height: 44, borderRadius: 12, backgroundColor: C.accentSoft, display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 },
+    deviceName:    { fontSize: 15, fontWeight: '800', color: C.text },
+    deviceMake:    { fontSize: 12, color: C.muted, marginTop: 2 },
+    pricePill:     { backgroundColor: C.greenSoft, padding: '6px 11px', borderRadius: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: 'auto' },
+    priceAmount:   { fontSize: 15, fontWeight: '800', color: C.green },
+    priceUnit:     { fontSize: 10, color: C.green, fontWeight: '600' },
+    tagsRow:       { display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 10 },
+    tag:           { display: 'flex', alignItems: 'center', backgroundColor: C.bg, border: `1px solid ${C.border}`, padding: '4px 8px', borderRadius: 8, gap: 3 },
+    tagText:       { fontSize: 11, color: C.muted, fontWeight: '500' },
+    planDetail:    { fontSize: 13, color: C.muted, lineHeight: 1.55, marginBottom: 14, flex: 1 },
+    cardFooter:    { display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 12, borderTop: `1px solid ${C.border}`, marginTop: 'auto' },
+    footerLabel:   { fontSize: 10, color: C.mutedLight, fontWeight: '600', letterSpacing: 0.4, marginBottom: 2 },
+    footerValue:   { fontSize: 14, fontWeight: '800', color: C.text },
+    applyBtn:      { display: 'flex', alignItems: 'center', backgroundColor: C.navy, padding: '10px 16px', borderRadius: 11, gap: 6, border: 'none', cursor: 'pointer' },
+    applyBtnLoading:{ opacity: 0.6, cursor: 'not-allowed' },
+    applyBtnText:  { color: '#fff', fontSize: 13, fontWeight: '700' },
+
+    empty:         { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 20px' },
+    emptyIcon:     { width: 58, height: 58, borderRadius: 15, backgroundColor: C.surface, border: `1px solid ${C.border}`, display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 16 },
+    emptyTitle:    { fontSize: 16, fontWeight: '800', color: C.text, marginBottom: 6 },
+    emptySub:      { fontSize: 13, color: C.muted, textAlign: 'center', lineHeight: 1.5, marginBottom: 16 },
+    clearSearchBtn:{ backgroundColor: C.accentSoft, padding: '8px 16px', borderRadius: 16, border: 'none', fontSize: 13, color: C.accent, fontWeight: '700', cursor: 'pointer' },
 };

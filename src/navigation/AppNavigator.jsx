@@ -1,99 +1,91 @@
-// AppNavigator.js (or directly in app.js)
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { ToastProvider } from "../components/ToastProvider"; // keep if web-compatible
+// navigation/AppNavigator.jsx
+// Updated:
+//  - /notifications route added → NotificationsScreen
+//  - SidebarLayout no longer needs onNotificationsClick (it navigates internally)
+//  - /complete-profile now renders ProfileScreen (combined account + profile)
 
-// Screens – ensure these are adapted to React (no React Native dependencies)
-import WelcomeScreen from "../screens/WelcomeScreen";
-import RegisterScreen from "../screens/Auth/RegisterScreen";
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { ToastProvider } from "../components/ToastProvider";
+import SidebarLayout from "../components/SidebarLayout";
+import { useState, useEffect } from "react";
+import { notificationAPI } from "../services/api";
+
+// Public screens
+import WelcomeScreen        from "../screens/WelcomeScreen";
+import AboutScreen          from "../screens/AboutScreen";
+import RegisterScreen       from "../screens/Auth/RegisterScreen";
 import ClientRegisterScreen from "../screens/Auth/ClientRegisterScreen";
-//import OperationalRegisterScreen from "../screens/Auth/OperationalRegisterScreen";
-import LoginScreen from "../screens/Auth/LoginScreen";
-//import AdminDashboard from "../screens/Admin/AdminDashboard";
-import ClientDashboard from "../screens/Client/ClientDashboard";
-import CompleteProfileScreen from "../screens/Client/CompleteProfileScreen";
-import DeviceCatalogScreen from "../screens/Client/DeviceCatalogScreen";
-import MyApplicationsScreen from "../screens/Client/MyApplicationsScreen";
+import LoginScreen          from "../screens/Auth/LoginScreen";
+
+// Client screens
+import ClientDashboard          from "../screens/Client/ClientDashboard";
+import ProfileScreen            from "../screens/Client/ProfileScreen";          // ← replaces CompleteProfileScreen
+import DeviceCatalogScreen      from "../screens/Client/DeviceCatalogScreen";
+import MyApplicationsScreen     from "../screens/Client/MyApplicationsScreen";
+import NotificationsScreen      from "../screens/Client/NotificationsScreen";   // ← NEW
 import ApplicationDetailsScreen from "../screens/Client/ApplicationDetailsScreen";
 
-// Simple header that mimics the native stack header styling
-function PageHeader() {
+const AUTH_ROUTES = ['/', '/about', '/register', '/client-register', '/operational-register', '/login'];
+
+function AppShell() {
     const location = useLocation();
-    const getTitle = () => {
-        switch (location.pathname) {
-            case "/":
-                return "";
-            case "/register":
-                return "Choose Registration";
-            case "/client-register":
-                return "Client Registration";
-            case "/operational-register":
-                return "Operational Registration";
-            case "/login":
-                return "Sign In";
-            case "/admin-dashboard":
-                return "Admin Dashboard";
-            case "/client-dashboard":
-                return "Client Dashboard";
-            case "/complete-profile":
-                return "Complete Profile";
-            case "/device-catalog":
-                return "Device Catalog";
-            case "/my-applications":
-                return "My Applications";
-            default:
-                if (location.pathname.startsWith("/application-details/"))
-                    return "Application Details";
-                return "App";
+    const navigate = useNavigate();
+
+    const isAuthRoute = AUTH_ROUTES.includes(location.pathname);
+
+    const [user,        setUser]        = useState(null);
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    useEffect(() => {
+        const ud = localStorage.getItem('user');
+        if (ud) {
+            try { setUser(JSON.parse(ud)); } catch { /* ignore */ }
         }
-    };
-    const title = getTitle();
-    if (!title) return null;
+    }, [location.pathname]);
+
+    useEffect(() => {
+        if (!isAuthRoute && user?.client_user_id) {
+            notificationAPI.getUnreadCount(user.client_user_id, 'Client')
+                .then(r => { if (r.data.success) setUnreadCount(r.data.unreadCount || 0); })
+                .catch(() => {});
+        }
+    }, [user, location.pathname]);
+
+    const routes = (
+        <Routes>
+            {/* ── Public ── */}
+            <Route path="/"                  element={<WelcomeScreen />} />
+            <Route path="/about"             element={<AboutScreen />} />
+            <Route path="/register"          element={<RegisterScreen />} />
+            <Route path="/client-register"   element={<ClientRegisterScreen />} />
+            <Route path="/login"             element={<LoginScreen />} />
+
+            {/* ── Client (authenticated) ── */}
+            <Route path="/client-dashboard"  element={<ClientDashboard />} />
+            <Route path="/complete-profile"  element={<ProfileScreen />} />
+            <Route path="/device-catalog"    element={<DeviceCatalogScreen />} />
+            <Route path="/my-applications"   element={<MyApplicationsScreen />} />
+            <Route path="/notifications"     element={<NotificationsScreen />} />
+            <Route path="/application-details/:applicationId" element={<ApplicationDetailsScreen />} />
+        </Routes>
+    );
+
+    if (isAuthRoute) {
+        return <div style={{ minHeight: '100vh' }}>{routes}</div>;
+    }
+
     return (
-        <header
-            style={{
-                backgroundColor: "#1e3a8a",
-                color: "#fff",
-                padding: "16px 20px",
-                fontWeight: "600",
-                fontSize: "1.2rem",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-            }}
-        >
-            {title}
-        </header>
+        <SidebarLayout user={user} unreadCount={unreadCount}>
+            {routes}
+        </SidebarLayout>
     );
 }
 
-// Main navigator component for web
 export default function AppNavigator() {
     return (
         <BrowserRouter>
             <ToastProvider>
-                <div style={{ minHeight: "100vh", backgroundColor: "#ffffff" }}>
-                    <PageHeader />
-                    <Routes>
-                        <Route path="/" element={<WelcomeScreen />} />
-                        <Route path="/register" element={<RegisterScreen />} />
-                        <Route path="/client-register" element={<ClientRegisterScreen />} />
-                        {/*<Route*/}
-                        {/*    path="/operational-register"*/}
-                        {/*    element={<OperationalRegisterScreen />}*/}
-                        {/*/>*/}
-                        <Route path="/login" element={<LoginScreen />} />
-                        {/*<Route path="/admin-dashboard" element={<AdminDashboard />} />*/}
-                        <Route path="/client-dashboard" element={<ClientDashboard />} />
-                        <Route
-                            path="/complete-profile"
-                            element={<CompleteProfileScreen />}
-                        />
-                        <Route path="/device-catalog" element={<DeviceCatalogScreen />} />
-                        <Route path="/my-applications" element={<MyApplicationsScreen />} />
-                        <Route
-                            path="/application-details/:applicationId"
-                            element={<ApplicationDetailsScreen />}
-                        />
-                    </Routes>
-                </div>
+                <AppShell />
             </ToastProvider>
         </BrowserRouter>
     );
