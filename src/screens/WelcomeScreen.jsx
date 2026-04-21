@@ -356,7 +356,7 @@ const S = {
         pointerEvents: 'none',
     },
     heroInner: {
-        maxWidth: 720,
+        maxWidth: '100%',
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
@@ -407,17 +407,17 @@ const S = {
         color: 'rgba(255,255,255,0.6)',
         textAlign: 'center',
         lineHeight: 1.75,
-        maxWidth: 580,
+        maxWidth: '100%',
         margin: '0 0 36px',
     },
 
-    heroBtns: { display: 'flex', flexDirection: 'column', gap: 12, width: '100%', maxWidth: 400, marginBottom: 40 },
+    heroBtns: { display: 'flex', flexDirection: 'row', gap: 14, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 40 },
     heroPrimary: {
         display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 10,
         backgroundColor: C.accent, borderRadius: 14, padding: '16px 24px',
         border: 'none', cursor: 'pointer',
         boxShadow: '0 6px 20px rgba(30,79,216,0.45)',
-        width: '100%',
+        minwidth: '160',
     },
     heroPrimaryDisabled: { backgroundColor: '#475569', boxShadow: 'none', cursor: 'not-allowed' },
     heroPrimaryText: { fontSize: 16, fontWeight: '700', color: '#fff', letterSpacing: '0.2px' },
@@ -436,7 +436,7 @@ const S = {
         backgroundColor: 'rgba(255,255,255,0.05)',
         border: '1px solid rgba(255,255,255,0.09)',
         borderRadius: 14, padding: '16px 24px',
-        width: '100%', maxWidth: 560,
+        width: '100%', maxWidth: '100%',
         marginBottom: 36,
     },
     statItem:   { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 20px' },
@@ -461,7 +461,7 @@ const S = {
         marginBottom: 12,
     },
     sectionTitle: { fontSize: 28, fontWeight: '800', color: C.text, margin: '0 0 10px', letterSpacing: '-0.2px' },
-    sectionDesc:  { fontSize: 15, color: C.muted, lineHeight: 1.7, maxWidth: 560, margin: '0 auto' },
+    sectionDesc:  { fontSize: 15, color: C.muted, lineHeight: 1.7, maxWidth: '100%', margin: '0 auto' },
 
     // ── Capabilities ──
     capGrid: {

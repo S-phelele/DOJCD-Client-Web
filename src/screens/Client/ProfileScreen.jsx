@@ -403,7 +403,7 @@ const S = {
     headerTitle: { fontSize: 19, fontWeight: '800', color: C.text, margin: 0 },
     headerSub:   { fontSize: 12, color: C.muted, marginTop: 2 },
 
-    body: { flex: 1, padding: '20px 24px 40px', display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 800, width: '100%', alignSelf: 'center', boxSizing: 'border-box' },
+    body: { flex: 1, padding: '20px 24px 40px', display: 'flex', flexDirection: 'column', gap: 24, maxWidth: '100%', width: '100%', alignSelf: 'center', boxSizing: 'border-box' },
 
     sectionHeader: { display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 },
     sectionTitle:  { fontSize: 15, fontWeight: '800', color: C.text, margin: '0 0 14px' },

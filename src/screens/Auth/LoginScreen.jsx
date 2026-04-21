@@ -229,7 +229,7 @@ const S = {
     banner: { backgroundColor: C.navy, padding: '28px 20px 28px', position: 'relative', overflow: 'hidden' },
     bannerRing1: { position: 'absolute', width: 260, height: 260, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.05)', top: -80, right: -60 },
     bannerRing2: { position: 'absolute', width: 160, height: 160, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.06)', bottom: -50, left: -50 },
-    bannerContent: { maxWidth: 560, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 16, position: 'relative', zIndex: 1, flexWrap: 'wrap' },
+    bannerContent: { maxWidth: '100%', margin: '0 auto', display: 'flex', alignItems: 'center', gap: 16, position: 'relative', zIndex: 1, flexWrap: 'wrap' },
     bannerEmblem:  { width: 52, height: 52, borderRadius: 14, backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.14)', display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 },
     bannerTitle:   { fontSize: 22, fontWeight: '800', color: '#fff', margin: '0 0 3px' },
     bannerSub:     { fontSize: 12, color: 'rgba(255,255,255,0.5)', margin: 0 },
@@ -237,7 +237,7 @@ const S = {
     secureDot:     { width: 6, height: 6, borderRadius: 3, backgroundColor: '#4ADE80' },
     secureText:    { fontSize: 11, color: 'rgba(255,255,255,0.7)', fontWeight: '600' },
 
-    pageBody:  { maxWidth: 560, margin: '0 auto', padding: '32px 20px 40px' },
+    pageBody:  { maxWidth: '100%', margin: '0 auto', padding: '32px 20px 40px' },
     card:      { backgroundColor: C.surface, borderRadius: 20, padding: '32px 28px', boxShadow: '0 4px 24px rgba(15,31,61,0.08)', border: `1px solid ${C.border}`, marginBottom: 20 },
     cardTitle: { fontSize: 24, fontWeight: '800', color: C.text, margin: '0 0 4px' },
     cardSub:   { fontSize: 14, color: C.muted, marginBottom: 28 },

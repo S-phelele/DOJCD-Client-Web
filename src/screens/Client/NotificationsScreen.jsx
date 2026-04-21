@@ -327,7 +327,7 @@ const S = {
     markAllText: { fontSize: 13, color: C.accent, fontWeight: '700' },
     iconBtn:     { width: 36, height: 36, borderRadius: 10, backgroundColor: C.bg, border: `1px solid ${C.border}`, display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer' },
 
-    body: { flex: 1, padding: '16px 24px 32px', maxWidth: 720, width: '100%', alignSelf: 'center', boxSizing: 'border-box' },
+    body: { flex: 1, padding: '16px 24px 32px', maxWidth: '100%', width: '100%', alignSelf: 'center', boxSizing: 'border-box' },
 
     list: { display: 'flex', flexDirection: 'column', gap: 8 },
 

@@ -3,8 +3,8 @@
 // Shares the AuthNavbar with Welcome/Login/Register screens.
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import AuthNavbar from '../components/PublicNavbar';
+import PublicFooter from '../components/PublicFooter';
 import {
     IoPhonePortraitOutline,
     IoCheckmarkCircleOutline,
@@ -12,9 +12,6 @@ import {
     IoShieldCheckmarkOutline,
     IoPeopleOutline,
     IoDocumentTextOutline,
-    IoArrowForward,
-    IoMailOutline,
-    IoCallOutline,
     IoGlobeOutline,
     IoTimeOutline,
     IoCloudUploadOutline,
@@ -73,8 +70,6 @@ const STATS = [
 ];
 
 export default function AboutScreen() {
-    const navigate = useNavigate();
-
     return (
         <div style={S.root}>
             <AuthNavbar />
@@ -231,54 +226,8 @@ export default function AboutScreen() {
                 </div>
             </section>
 
-            {/* ── CTA ── */}
-            <section style={S.ctaSection}>
-                <div style={S.ctaInner}>
-                    <div style={S.ctaEmblem}>⚖️</div>
-                    <h2 style={S.ctaTitle}>Ready to get started?</h2>
-                    <p style={S.ctaSub}>
-                        Create your account to request devices or sign in to continue where you left off.
-                    </p>
-                    <div style={S.ctaBtns}>
-                        <button style={S.ctaBtnPrimary} onClick={() => navigate('/register')}>
-                            <span>Register Now</span>
-                            <IoArrowForward size={18} color="#fff" />
-                        </button>
-                        <button style={S.ctaBtnOutline} onClick={() => navigate('/login')}>
-                            Sign In
-                        </button>
-                    </div>
-                </div>
-            </section>
 
-            {/* ── Footer ── */}
-            <footer style={S.footer}>
-                <div style={S.footerInner}>
-                    <div style={S.footerBrand}>
-                        <div style={S.footerLogo}>⚖️</div>
-                        <div>
-                            <div style={S.footerBrandName}>DOJCD Connect</div>
-                            <div style={S.footerBrandSub}>Department of Justice &amp; Constitutional Development</div>
-                        </div>
-                    </div>
-                    <div style={S.footerLinks}>
-                        <div style={S.footerContact}>
-                            <div style={S.footerContactItem}>
-                                <IoMailOutline size={14} color={C.mutedLight} />
-                                <span>support@dojcd.gov.za</span>
-                            </div>
-                            <div style={S.footerContactItem}>
-                                <IoGlobeOutline size={14} color={C.mutedLight} />
-                                <span>www.justice.gov.za</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div style={S.footerBottom}>
-                    <span>© {new Date().getFullYear()} Republic of South Africa · Department of Justice &amp; Constitutional Development</span>
-                    <span>WEB v1.0.0</span>
-                </div>
-            </footer>
+            <PublicFooter />
         </div>
     );
 }
@@ -293,7 +242,7 @@ const S = {
     },
     heroRing1: { position: 'absolute', width: 500, height: 500, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.05)', top: -180, right: -120 },
     heroRing2: { position: 'absolute', width: 300, height: 300, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.06)', bottom: -80, left: -80 },
-    heroContent: { maxWidth: 700, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' },
+    heroContent: { maxWidth: '100%', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' },
     heroEmblemWrap: { position: 'relative', marginBottom: 24 },
     heroGlow: { position: 'absolute', inset: -16, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.25) 0%, transparent 70%)' },
     heroEmblem: { width: 96, height: 96, borderRadius: 28, backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' },
@@ -305,8 +254,8 @@ const S = {
     statLabel: { fontSize: 11, color: 'rgba(255,255,255,0.45)', fontWeight: '600', letterSpacing: 0.4 },
 
     // Sections
-    section:     { padding: '64px 24px' },
-    sectionInner:{ maxWidth: 1040, margin: '0 auto' },
+    section:     { padding: '64px 0' },
+    sectionInner:{ maxWidth: '100%', margin: '0 auto', padding: '0 24px' },
     badge: {
         display: 'inline-block', fontSize: 10, fontWeight: '800',
         letterSpacing: '1.5px', color: C.accent,
@@ -314,8 +263,8 @@ const S = {
         marginBottom: 16,
     },
     sectionTitle: { fontSize: 30, fontWeight: '900', color: C.text, margin: '0 0 20px', letterSpacing: '-0.3px' },
-    bodyText:     { fontSize: 15, color: C.muted, lineHeight: 1.75, marginBottom: 20, maxWidth: 720 },
-    bodySub:      { fontSize: 15, color: C.muted, lineHeight: 1.6, marginBottom: 36, maxWidth: 600 },
+    bodyText:     { fontSize: 15, color: C.muted, lineHeight: 1.75, marginBottom: 20, maxWidth: '100%' },
+    bodySub:      { fontSize: 15, color: C.muted, lineHeight: 1.6, marginBottom: 36, maxWidth: '100%' },
 
     // Highlights
     highlightGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 14, marginTop: 8 },
@@ -348,41 +297,5 @@ const S = {
     complianceGrid: { display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 24 },
     complianceTag:  { backgroundColor: C.accentSoft, color: C.accent, padding: '7px 16px', borderRadius: 20, fontSize: 12, fontWeight: '700', border: `1px solid ${C.accent}30` },
 
-    // CTA
-    ctaSection: { backgroundColor: C.navy, padding: '72px 24px', position: 'relative', overflow: 'hidden' },
-    ctaInner:   { maxWidth: 600, margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', position: 'relative' },
-    ctaEmblem:  { fontSize: 48, marginBottom: 20 },
-    ctaTitle:   { fontSize: 32, fontWeight: '900', color: '#fff', margin: '0 0 14px', letterSpacing: '-0.3px' },
-    ctaSub:     { fontSize: 15, color: 'rgba(255,255,255,0.55)', lineHeight: 1.65, marginBottom: 36 },
-    ctaBtns:    { display: 'flex', gap: 14, flexWrap: 'wrap', justifyContent: 'center' },
-    ctaBtnPrimary: {
-        display: 'flex', alignItems: 'center', gap: 8,
-        backgroundColor: C.accent, color: '#fff',
-        border: 'none', borderRadius: 12, padding: '14px 28px',
-        fontSize: 15, fontWeight: '700', cursor: 'pointer',
-        boxShadow: '0 6px 16px rgba(30,79,216,0.4)',
-    },
-    ctaBtnOutline: {
-        backgroundColor: 'transparent', color: '#fff',
-        border: '1.5px solid rgba(255,255,255,0.3)',
-        borderRadius: 12, padding: '14px 28px',
-        fontSize: 15, fontWeight: '700', cursor: 'pointer',
-    },
 
-    // Footer
-    footer:       { backgroundColor: C.navy, borderTop: '1px solid rgba(255,255,255,0.07)', padding: '40px 24px 24px' },
-    footerInner:  { maxWidth: 1040, margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: 24, marginBottom: 32 },
-    footerBrand:  { display: 'flex', alignItems: 'center', gap: 14 },
-    footerLogo:   { fontSize: 28 },
-    footerBrandName: { fontSize: 16, fontWeight: '800', color: '#fff' },
-    footerBrandSub:  { fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 3 },
-    footerLinks:     { display: 'flex', flexDirection: 'column', gap: 8 },
-    footerContact:   { display: 'flex', flexDirection: 'column', gap: 8 },
-    footerContactItem:{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'rgba(255,255,255,0.45)' },
-    footerBottom: {
-        maxWidth: 1040, margin: '0 auto',
-        paddingTop: 20, borderTop: '1px solid rgba(255,255,255,0.07)',
-        display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8,
-        fontSize: 11, color: 'rgba(255,255,255,0.3)',
-    },
 };

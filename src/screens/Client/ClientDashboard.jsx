@@ -455,7 +455,7 @@ const S = {
         padding: '0 3px', border: `2px solid ${C.surface}`,
     },
 
-    body: { flex: 1, padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 22, maxWidth: 960, width: '100%', alignSelf: 'center', boxSizing: 'border-box' },
+    body: { flex: 1, padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 22, maxWidth: '100%', width: '100%', alignSelf: 'center', boxSizing: 'border-box' },
 
     profileBanner: {
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',

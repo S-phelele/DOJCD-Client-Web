@@ -104,7 +104,7 @@ const navbarCSS = `
   .anb-scrolled { box-shadow: 0 2px 18px rgba(15,31,61,0.13); }
 
   .anb-inner {
-    max-width: 1200px; margin: 0 auto; height: 64px;
+    max-width: 100%; margin: 0 auto; height: 64px;
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 24px;
   }

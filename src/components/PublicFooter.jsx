@@ -151,7 +151,7 @@ const S = {
     },
     ctaRing1: { position: 'absolute', width: 320, height: 320, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.05)', top: -100, right: -80, pointerEvents: 'none' },
     ctaRing2: { position: 'absolute', width: 200, height: 200, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.05)', bottom: -60, left: -50, pointerEvents: 'none' },
-    ctaInner: { maxWidth: 700, margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 },
+    ctaInner: { maxWidth: '100%', margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 },
     ctaTitle: { fontSize: 28, fontWeight: '800', color: '#fff', margin: '0 0 10px', letterSpacing: '-0.2px' },
     ctaDesc:  { fontSize: 15, color: 'rgba(255,255,255,0.55)', margin: '0 0 28px', lineHeight: 1.7 },
     ctaBtns:  { display: 'flex', justifyContent: 'center', gap: 12, flexWrap: 'wrap' },
@@ -173,7 +173,7 @@ const S = {
     // Main footer body
     main: { backgroundColor: C.navyLight, padding: '40px 24px 0' },
     mainInner: {
-        maxWidth: 1100, margin: '0 auto',
+        maxWidth: '100%', margin: '0 auto', padding: '0 8px',
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
         gap: 32,
@@ -202,7 +202,7 @@ const S = {
 
     // Bottom bar
     bottomBar: {
-        maxWidth: 1100, margin: '0 auto',
+        maxWidth: '100%', margin: '0 auto',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         flexWrap: 'wrap', gap: 8,
         borderTop: '1px solid rgba(255,255,255,0.07)',

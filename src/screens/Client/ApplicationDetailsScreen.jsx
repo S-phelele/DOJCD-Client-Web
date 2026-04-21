@@ -91,10 +91,37 @@ export default function ApplicationDetailsScreen() {
             const u = JSON.parse(userStr);
             setUser(u);
             const res = await deviceAPI.getApplicationDetails(u.client_user_id, parseInt(applicationId));
-            // Handle nested response shape
-            const raw = res?.data?.data;
-            setApplication(raw || null);
-        } catch {
+
+            // Robustly unwrap — try every nesting shape the API might return
+            const d = res?.data;
+            let raw =
+                d?.data?.application ??
+                d?.data?.data        ??
+                d?.data              ??
+                d                    ??
+                null;
+
+            // If raw is an array (shouldn't happen but guard it), take first item
+            if (Array.isArray(raw)) raw = raw[0] ?? null;
+
+            // Normalise alternate field name variants
+            if (raw && typeof raw === 'object') {
+                raw.submission_date  = raw.submission_date  || raw.created_at         || raw.submitted_at || raw.date_submitted || null;
+                raw.last_updated     = raw.last_updated     || raw.updated_at         || raw.last_modified || raw.date_updated  || null;
+                raw.device_name      = raw.device_name      || raw.name               || raw.device       || null;
+                raw.manufacturer     = raw.manufacturer     || raw.device_manufacturer || raw.brand       || null;
+                raw.model            = raw.model            || raw.device_model        || null;
+                raw.plan_name        = raw.plan_name        || raw.contract_plan       || raw.plan         || null;
+                raw.plan_details     = raw.plan_details     || raw.plan_description    || raw.details      || null;
+                raw.monthly_cost     = raw.monthly_cost     || raw.cost_per_month      || raw.price        || null;
+                raw.contract_duration_months = raw.contract_duration_months || raw.duration || raw.contract_duration || null;
+                raw.application_status       = raw.application_status       || raw.status   || 'Pending';
+            }
+
+            console.log('[ApplicationDetails] API raw:', raw);
+            setApplication((raw && raw.application_id) ? raw : null);
+        } catch (err) {
+            console.error('ApplicationDetails load error:', err);
             toast.error('Failed to Load', 'Could not load application details.');
         } finally {
             setLoading(false);
@@ -188,7 +215,7 @@ export default function ApplicationDetailsScreen() {
 
     // Contract total cost
     const contractTotal = application.monthly_cost && application.contract_duration_months
-        ? `R${(application.monthly_cost * application.contract_duration_months).toLocaleString('en-ZA')}`
+        ? `R${(Number(application.monthly_cost) * Number(application.contract_duration_months)).toLocaleString('en-ZA')}`
         : '—';
 
     // Build timeline steps
@@ -199,7 +226,7 @@ export default function ApplicationDetailsScreen() {
         {
             key: 'submitted',
             label: 'Application Submitted',
-            sublabel: `Application #${application.application_id} created`,
+            sublabel: `Application #${application.application_id ?? applicationId} created`,
             date: application.submission_date,
             done: true,
             color: C.green,
@@ -291,10 +318,10 @@ export default function ApplicationDetailsScreen() {
                                 </div>
                                 <div style={{ flex: 1, minWidth: 0 }}>
                                     <div style={S.deviceName}>{application.device_name}</div>
-                                    <div style={S.deviceSub}>{application.model} · {application.manufacturer}</div>
+                                    <div style={S.deviceSub}>{[application.model, application.manufacturer].filter(Boolean).join(' · ') || '—'}</div>
                                 </div>
                                 <div style={S.pricePill}>
-                                    <div style={S.priceVal}>R{application.monthly_cost?.toLocaleString('en-ZA')}</div>
+                                    <div style={S.priceVal}>{application.monthly_cost ? `R${Number(application.monthly_cost).toLocaleString('en-ZA')}` : '—'}</div>
                                     <div style={S.priceUnit}>/mo</div>
                                 </div>
                             </div>
@@ -305,8 +332,8 @@ export default function ApplicationDetailsScreen() {
                             <InfoRow icon={IoInformationCircleOutline} label="Model"         value={application.model} />
                             <InfoRow icon={IoDocumentTextOutline} label="Plan Name"          value={application.plan_name} />
                             <InfoRow icon={IoInformationCircleOutline} label="Plan Details"  value={application.plan_details} />
-                            <InfoRow icon={IoCashOutline}          label="Monthly Cost"      value={`R${application.monthly_cost?.toLocaleString('en-ZA')}`} valueColor={C.green} />
-                            <InfoRow icon={IoCalendarOutline}      label="Contract Duration" value={`${application.contract_duration_months} Months`} />
+                            <InfoRow icon={IoCashOutline}          label="Monthly Cost"      value={application.monthly_cost ? `R${Number(application.monthly_cost).toLocaleString('en-ZA')}` : '—'} valueColor={C.green} />
+                            <InfoRow icon={IoCalendarOutline}      label="Contract Duration" value={application.contract_duration_months ? `${application.contract_duration_months} Months` : '—'} />
                             <InfoRow icon={IoCashOutline}          label="Contract Total"    value={contractTotal} valueColor={C.navy} last />
                         </div>
                     </div>
@@ -437,7 +464,7 @@ const S = {
     headerTitle:  { fontSize: 16, fontWeight: '800', color: C.text, margin: 0 },
     headerSub:    { fontSize: 11, color: C.muted, marginTop: 2 },
 
-    body: { flex: 1, padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 18, maxWidth: 760, width: '100%', alignSelf: 'center', boxSizing: 'border-box' },
+    body: { flex: 1, padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 18, maxWidth: '100%', width: '100%', alignSelf: 'center', boxSizing: 'border-box' },
 
     statusHero: {
         borderRadius: 18, padding: '28px 24px',

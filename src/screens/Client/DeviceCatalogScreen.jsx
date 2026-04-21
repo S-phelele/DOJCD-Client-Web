@@ -183,7 +183,7 @@ export default function DeviceCatalogScreen() {
             <div style={S.cardFooter}>
                 <div>
                     <div style={S.footerLabel}>Contract total</div>
-                    <div style={S.footerValue}>R{item.monthly_cost * item.contract_duration_months}</div>
+                    <div style={S.footerValue}>R{(item.monthly_cost * item.contract_duration_months).toFixed(2)}</div>
                 </div>
                 <button
                     style={{ ...S.applyBtn, ...(applying === item.device_id ? S.applyBtnLoading : {}) }}

@@ -173,12 +173,12 @@ const S = {
 
     banner:        { backgroundColor: C.navy, padding: '24px 20px 20px', position: 'relative', overflow: 'hidden' },
     bannerRing:    { position: 'absolute', width: 260, height: 260, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.05)', top: -80, right: -60 },
-    bannerContent: { display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20, maxWidth: 640, margin: '0 auto 20px' },
+    bannerContent: { display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20, maxWidth: '100%', margin: '0 auto 20px' },
     emblem:        { width: 52, height: 52, borderRadius: 14, backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 },
     bannerTitle:   { fontSize: 22, fontWeight: '800', color: '#fff', margin: '0 0 3px' },
     bannerSub:     { fontSize: 12, color: 'rgba(255,255,255,0.5)', margin: 0 },
 
-    stepRow:       { display: 'flex', alignItems: 'flex-start', justifyContent: 'center', maxWidth: 400, margin: '0 auto' },
+    stepRow:       { display: 'flex', alignItems: 'flex-start', justifyContent: 'center', maxWidth: '100%', margin: '0 auto' },
     stepItem:      { display: 'flex', flexDirection: 'column', alignItems: 'center', width: 56 },
     stepCircle:    { width: 28, height: 28, borderRadius: 14, backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 5 },
     stepCircleActive: { backgroundColor: C.accent, borderColor: C.accent },
@@ -188,7 +188,7 @@ const S = {
     stepLabelActive: { color: 'rgba(255,255,255,0.85)' },
     stepConnector: { flex: 1, height: 1, backgroundColor: 'rgba(255,255,255,0.12)', marginTop: 14, maxWidth: 20 },
 
-    bodyInner:   { maxWidth: 640, margin: '0 auto', padding: '28px 20px 40px' },
+    bodyInner:   { maxWidth: '100%', margin: '0 auto', padding: '28px 20px 40px' },
     chooseSub:   { fontSize: 14, color: C.muted, textAlign: 'center', marginBottom: 20 },
 
     roleCard: {
