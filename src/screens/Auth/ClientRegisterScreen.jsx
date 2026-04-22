@@ -62,6 +62,19 @@ const SOUTH_AFRICAN_REGIONS = [
     'Limpopo', 'Mpumalanga', 'Northern Cape', 'North West', 'Western Cape',
 ].map(v => ({ value: v, label: v }));
 
+const DEPARTMENTS = [
+    { value: 'DoJ&CD Commission', label: 'DoJ&CD Commission' },
+    { value: 'DoJ&CD Gauteng',    label: 'DoJ&CD Gauteng' },
+    { value: 'DoJ&CD Eastern Cape', label: 'DoJ&CD Eastern Cape' },
+    { value: 'DoJ&CD KwaZulu Natal', label: 'DoJ&CD KwaZulu-Natal' },
+    { value: 'DoJ&CD Mpumalanga', label: 'DoJ&CD Mpumalanga' },
+    { value: 'DoJ&CD Northern Cape', label: 'DoJ&CD Northern Cape' },
+    { value: 'DoJ&CD Western Cape', label: 'DoJ&CD Western Cape' },
+    { value: 'DoJ&CD Limpopo',    label: 'DoJ&CD Limpopo' },
+    { value: 'DoJ&CD North West',  label: 'DoJ&CD North West' },
+    { value: 'DoJ&CD Free State', label: 'DoJ&CD Free State' },
+];
+
 const COUNTRY_CODE = '+27';
 
 const validateSouthAfricanID = (idNumber) => {
@@ -320,7 +333,7 @@ export default function ClientRegisterScreen() {
                     </div>
                     <SelectField label="Region / Province *" value={formData.region} placeholder="Select your region" onSelect={v => { setFormData({ ...formData, region: v }); setErrors(p => ({ ...p, region: '' })); }} editable={!loading} options={SOUTH_AFRICAN_REGIONS} error={errors.region} icon="location-outline" />
                     <Field label="PERSAL / SA ID Number *" placeholder="Enter your 13-digit ID" value={formData.persalId} editable={!loading} onChangeText={t => setFormData({ ...formData, persalId: t })} onBlur={() => { if (formData.persalId) { const e = validateSouthAfricanID(formData.persalId); if (e) setErrors(p => ({ ...p, persalId: e })); } }} error={errors.persalId} icon="card-outline" hint="Your South African ID / PERSAL number (13 digits)" />
-                    <Field label="Department ID *" placeholder="Enter your department ID" value={formData.departmentId} editable={!loading} onChangeText={t => setFormData({ ...formData, departmentId: t })} error={errors.departmentId} icon="business-outline" />
+                    <SelectField label="Department *" value={formData.departmentId} placeholder="Select your department" onSelect={v => { setFormData({ ...formData, departmentId: v }); setErrors(p => ({ ...p, departmentId: '' })); }} editable={!loading} options={DEPARTMENTS} error={errors.departmentId} icon="business-outline" />
                     <div style={stepContentStyles.stepIntro}>
                         <div style={{ ...stepContentStyles.stepIco, backgroundColor: C.accentSoft }}><IoBriefcaseOutline size={20} color={C.accent} /></div>
                         <div><div style={stepContentStyles.stepTitle}>User Type</div><div style={stepContentStyles.stepSub}>Select your role in the department</div></div>
@@ -414,7 +427,7 @@ export default function ClientRegisterScreen() {
 
             {/* Form area — flex 1 to push footer to bottom */}
             <div style={{ flex: 1, backgroundColor: C.bg, overflowY: 'auto', padding: '20px' }}>
-                <div style={{ maxWidth: '100%', margin: '0 auto' }}>
+                <div style={{ maxWidth: 640, margin: '0 auto' }}>
                     <div style={stepContentStyles.formCard}>
                         {renderStep()}
                     </div>
@@ -456,7 +469,7 @@ const headerStyles = {
     wrap:      { backgroundColor: C.navy, paddingTop: 12, paddingBottom: 16, paddingLeft: 20, paddingRight: 20, position: 'relative', overflow: 'hidden' },
     ring:      { position: 'absolute', width: 240, height: 240, borderRadius: 120, border: '1px solid rgba(255,255,255,0.05)', top: -80, right: -60 },
     backBtn:   { width: 38, height: 38, borderRadius: 11, backgroundColor: 'rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'center', alignItems: 'center', border: 'none', cursor: 'pointer', flexShrink: 0 },
-    titleRow:  { display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, maxWidth: '100%', margin: '0 auto 16px' },
+    titleRow:  { display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, maxWidth: 640, margin: '0 auto 16px' },
     emblem:    { width: 44, height: 44, borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 },
     title:     { fontSize: 18, fontWeight: '800', color: '#fff', marginBottom: 2 },
     sub:       { fontSize: 11, color: 'rgba(255,255,255,0.5)' },
@@ -488,13 +501,13 @@ const stepContentStyles = {
 };
 
 const navStyles = {
-    row:          { display: 'flex', gap: 12, marginBottom: 16, maxWidth: '100%', margin: '0 auto 16px' },
+    row:          { display: 'flex', gap: 12, marginBottom: 16, maxWidth: 640, margin: '0 auto 16px' },
     back:         { flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, padding: '15px 0', borderRadius: 16, border: `1.5px solid ${C.navy}`, backgroundColor: C.surface, cursor: 'pointer', fontWeight: '700', color: C.navy },
     next:         { flex: 2, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, backgroundColor: C.navy, padding: '16px 0', borderRadius: 16, boxShadow: '0 5px 10px rgba(15,31,61,0.25)', cursor: 'pointer', color: '#fff', fontWeight: '700', border: 'none' },
     nextFull:     { flex: 1 },
     submit:       { flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 10, backgroundColor: C.green, padding: '16px 0', borderRadius: 16, boxShadow: '0 5px 10px rgba(5,150,105,0.25)', cursor: 'pointer', color: '#fff', fontWeight: '700', border: 'none' },
     submitLoading:{ backgroundColor: C.disabled, boxShadow: 'none', cursor: 'not-allowed' },
-    loginLink:    { width: '100%', textAlign: 'center', padding: '8px 0', background: 'none', border: 'none', cursor: 'pointer', display: 'block', margin: '0 auto', maxWidth: '100%' },
+    loginLink:    { width: '100%', textAlign: 'center', padding: '8px 0', background: 'none', border: 'none', cursor: 'pointer', display: 'block', margin: '0 auto', maxWidth: 640 },
     loginText:    { fontSize: 14, color: C.muted },
 };
 
