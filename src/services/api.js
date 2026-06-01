@@ -11,7 +11,7 @@ const getBaseURL = () => {
 
     // In development (npm start), use relative URL so the proxy works
     if (process.env.NODE_ENV === 'development') {
-        return '/api';
+        return 'http://localhost:5000/api';
     }
 
     // For Create React App: process.env.REACT_APP_API_URL
@@ -209,6 +209,9 @@ export const deviceAPI = {
         api.get(`/applications/users/${clientUserId}/applications/${applicationId}`),
     cancelApplication: (clientUserId, applicationId) =>
         api.put(`/applications/users/${clientUserId}/applications/${applicationId}/cancel`),
+    resubmitApplication: (clientUserId, applicationId, deviceId = null) =>
+        api.post(`/applications/users/${clientUserId}/applications/${applicationId}/resubmit`,
+            deviceId ? { device_id: deviceId } : {}),
     getApplicationSummary: (clientUserId) =>
         api.get(`/applications/users/${clientUserId}/applications/summary`),
     checkEligibility: (clientUserId) =>

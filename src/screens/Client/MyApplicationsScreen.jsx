@@ -43,10 +43,11 @@ const C = {
 };
 
 const STATUS_META = {
-    Approved:  { bg: C.greenSoft, fg: C.green, dot: C.green },
-    Pending:   { bg: C.amberSoft, fg: C.amber, dot: C.amber },
-    Rejected:  { bg: C.roseSoft,  fg: C.rose,  dot: C.rose },
-    Cancelled: { bg: C.slateSoft, fg: C.slate, dot: C.slate },
+    Approved:        { bg: C.greenSoft, fg: C.green,   dot: C.green },
+    Pending:         { bg: C.amberSoft, fg: C.amber,   dot: C.amber },
+    Pending_Finance: { bg: '#EDE9FE',   fg: '#7C3AED', dot: '#7C3AED' },
+    Rejected:        { bg: C.roseSoft,  fg: C.rose,    dot: C.rose },
+    Cancelled:       { bg: C.slateSoft, fg: C.slate,   dot: C.slate },
 };
 
 const StatusChip = ({ status }) => {
@@ -60,11 +61,12 @@ const StatusChip = ({ status }) => {
 };
 
 const FILTERS = [
-    { key: 'All',       icon: IoAppsOutline },
-    { key: 'Pending',   icon: IoTimeOutline },
-    { key: 'Approved',  icon: IoCheckmarkCircleOutline },
-    { key: 'Rejected',  icon: IoCloseCircleOutline },
-    { key: 'Cancelled', icon: IoBanOutline },
+    { key: 'All',             icon: IoAppsOutline },
+    { key: 'Pending',         icon: IoTimeOutline },
+    { key: 'Pending_Finance', icon: IoTimeOutline },
+    { key: 'Approved',        icon: IoCheckmarkCircleOutline },
+    { key: 'Rejected',        icon: IoCloseCircleOutline },
+    { key: 'Cancelled',       icon: IoBanOutline },
 ];
 
 export default function MyApplicationsScreen() {
@@ -142,6 +144,34 @@ export default function MyApplicationsScreen() {
         }
     };
 
+    const handleResubmitClick = (app) => {
+        setDialog({
+            title: 'Resubmit Application',
+            message: `Resubmit your application for the ${app.device_name}?`,
+            details: 'A new application will be created for the same device and sent for review.',
+            confirmText: 'Yes, Resubmit',
+            cancelText: 'Not Now',
+            variant: 'primary',
+            onConfirm: () => submitResubmit(app.application_id),
+        });
+    };
+
+    const submitResubmit = async (applicationId) => {
+        if (!user?.client_user_id) { toast.error('Error', 'User not found.'); return; }
+        try {
+            const r = await deviceAPI.resubmitApplication(user.client_user_id, applicationId);
+            if (r.data.success) {
+                toast.success('Resubmitted', r.data.message || 'Application resubmitted.');
+                await loadApplications();
+            } else {
+                toast.error('Failed', r.data.message);
+            }
+        } catch (error) {
+            const msg = error.response?.data?.message;
+            toast.error('Failed', msg || error.message);
+        }
+    };
+
     // Guard: ensure applications is always an array before calling .filter
     const safeApps = Array.isArray(applications) ? applications : [];
     const filtered  = filter === 'All' ? safeApps : safeApps.filter(a => a.application_status === filter);
@@ -194,6 +224,15 @@ export default function MyApplicationsScreen() {
                                 >
                                     <IoCloseCircleOutline size={14} color={C.rose} />
                                     <span style={S.cancelBtnText}>Cancel</span>
+                                </button>
+                            )}
+                            {(item.application_status === 'Rejected' || item.application_status === 'Cancelled') && (
+                                <button
+                                    style={{ ...S.cancelBtn, borderColor: C.accent }}
+                                    onClick={e => { e.stopPropagation(); handleResubmitClick(item); }}
+                                >
+                                    <IoRefreshOutline size={14} color={C.accent} />
+                                    <span style={{ ...S.cancelBtnText, color: C.accent }}>Resubmit</span>
                                 </button>
                             )}
                             <div style={S.viewHint}>

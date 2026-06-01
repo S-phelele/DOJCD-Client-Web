@@ -50,10 +50,11 @@ const C = {
 };
 
 const STATUS_META = {
-    Approved:  { bg: C.greenSoft, fg: C.green, dot: C.green,  icon: IoCheckmarkCircle, label: 'Approved',    timelineLabel: 'Approved' },
-    Pending:   { bg: C.amberSoft, fg: C.amber, dot: C.amber,  icon: IoTime,            label: 'Under Review', timelineLabel: 'Under Review' },
-    Rejected:  { bg: C.roseSoft,  fg: C.rose,  dot: C.rose,   icon: IoCloseCircle,     label: 'Rejected',    timelineLabel: 'Rejected' },
-    Cancelled: { bg: C.slateSoft, fg: C.slate, dot: C.slate,  icon: IoCloseCircle,     label: 'Cancelled',   timelineLabel: 'Cancelled' },
+    Approved:         { bg: C.greenSoft, fg: C.green, dot: C.green,  icon: IoCheckmarkCircle, label: 'Approved',          timelineLabel: 'Approved' },
+    Pending:          { bg: C.amberSoft, fg: C.amber, dot: C.amber,  icon: IoTime,            label: 'Under Review',      timelineLabel: 'Under Review' },
+    Pending_Finance:  { bg: '#EDE9FE',   fg: '#7C3AED', dot: '#7C3AED', icon: IoTime,         label: 'Finance Review',    timelineLabel: 'Awaiting Finance' },
+    Rejected:         { bg: C.roseSoft,  fg: C.rose,  dot: C.rose,   icon: IoCloseCircle,     label: 'Rejected',          timelineLabel: 'Rejected' },
+    Cancelled:        { bg: C.slateSoft, fg: C.slate, dot: C.slate,  icon: IoCloseCircle,     label: 'Cancelled',         timelineLabel: 'Cancelled' },
 };
 
 // ─── Reusable info row ──────────────────────────────────────────────────────
