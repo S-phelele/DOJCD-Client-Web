@@ -113,6 +113,8 @@ export default function SidebarLayout({ children, unreadCount = 0, user }) {
 
     const doLogout = () => {
         localStorage.removeItem('user');
+        localStorage.removeItem('clientToken');
+        localStorage.removeItem('clientRefreshToken');
         localStorage.removeItem('profile_skipped');
         navigate('/login');
     };

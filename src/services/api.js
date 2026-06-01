@@ -34,10 +34,12 @@ const api = axios.create({
     },
 });
 
-// Request interceptor (optional logging)
+// Request interceptor — attach auth token + logging
 api.interceptors.request.use(
     (config) => {
         console.log(`📡 ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`);
+        const token = localStorage.getItem('clientToken');
+        if (token) config.headers.Authorization = `Bearer ${token}`;
         return config;
     },
     (error) => {

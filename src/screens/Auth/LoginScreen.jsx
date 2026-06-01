@@ -64,16 +64,16 @@ export default function LoginScreen() {
             const body = response;
             if (!body.success) { toast.error('Login Failed', body.message); return; }
             const user = body.data?.user;
+            const accessToken  = body.data?.accessToken;
+            const refreshToken = body.data?.refreshToken;
             if (!user) throw new Error('No user data received from server');
             localStorage.setItem('user', JSON.stringify(user));
+            if (accessToken)  localStorage.setItem('clientToken', accessToken);
+            if (refreshToken) localStorage.setItem('clientRefreshToken', refreshToken);
             if (formData.rememberMe) localStorage.setItem('rememberedEmail', formData.email);
             else localStorage.removeItem('rememberedEmail');
             toast.success('Welcome back!', body.message || 'Login successful');
-            setTimeout(() => {
-                if (user.user_type === 'client') navigate('/client-dashboard', { replace: true });
-                else if (user.user_type === 'operational' && user.user_role === 'Admin') navigate('/admin-dashboard', { replace: true });
-                else toast.warning('Access Restricted', "Your role doesn't have access yet.");
-            }, 900);
+            setTimeout(() => navigate('/client-dashboard', { replace: true }), 900);
         } catch (error) {
             const status = error.response?.status;
             const message = error.response?.data?.message;
