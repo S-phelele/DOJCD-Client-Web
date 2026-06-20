@@ -397,7 +397,6 @@ export default function ClientRegisterScreen() {
                         </div>
                     </div>
                     <div style={stepContentStyles.acceptBanner}>
-                        <IoShieldCheckmarkOutline size={18} color={C.green} />
                         <span style={stepContentStyles.acceptText}>By creating your account, you agree to all the terms and conditions listed above.</span>
                     </div>
                 </>

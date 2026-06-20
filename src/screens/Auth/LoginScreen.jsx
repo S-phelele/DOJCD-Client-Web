@@ -204,7 +204,6 @@ export default function LoginScreen() {
                     {/* Trust indicators */}
                     <div style={S.trustRow}>
                         {[
-                            { icon: IoShieldCheckmarkOutline, text: 'Secure Authentication' },
                             { icon: IoLockClosedOutline,       text: 'Encrypted Connection' },
                         ].map((t, i) => {
                             const Icon = t.icon;
