@@ -85,7 +85,7 @@ export default function AboutScreen() {
                 <div style={S.heroContent}>
                     <div style={S.heroEmblemWrap}>
                         <div style={S.heroGlow} />
-                        <div style={S.heroEmblem}><span style={{ fontSize: 48 }}>⚖️</span></div>
+                        <div style={S.heroEmblem}><IoShieldCheckmarkOutline size={52} color="#fff" /></div>
                     </div>
                     <h1 style={S.heroTitle}>About DOJCD Connect</h1>
                     <p style={S.heroSub}>
@@ -243,9 +243,9 @@ const S = {
     heroRing1: { position: 'absolute', width: 500, height: 500, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.05)', top: -180, right: -120 },
     heroRing2: { position: 'absolute', width: 300, height: 300, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.06)', bottom: -80, left: -80 },
     heroContent: { maxWidth: '100%', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' },
-    heroEmblemWrap: { position: 'relative', marginBottom: 24 },
-    heroGlow: { position: 'absolute', inset: -16, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.25) 0%, transparent 70%)' },
-    heroEmblem: { width: 96, height: 96, borderRadius: 28, backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' },
+    heroEmblemWrap: { position: 'relative', marginBottom: 28 },
+    heroGlow: { position: 'absolute', inset: -20, borderRadius: '50%', background: 'radial-gradient(circle, rgba(30,79,216,0.3) 0%, transparent 70%)' },
+    heroEmblem: { width: 100, height: 100, borderRadius: 30, background: 'linear-gradient(135deg, rgba(30,79,216,0.4) 0%, rgba(255,255,255,0.08) 100%)', border: '1px solid rgba(255,255,255,0.18)', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', boxShadow: '0 8px 28px rgba(30,79,216,0.3)' },
     heroTitle: { fontSize: 36, fontWeight: '900', color: '#fff', textAlign: 'center', margin: '0 0 12px', letterSpacing: '-0.5px' },
     heroSub:   { fontSize: 16, color: 'rgba(255,255,255,0.55)', textAlign: 'center', lineHeight: 1.6, marginBottom: 36 },
     statsRow:  { display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'center', width: '100%' },

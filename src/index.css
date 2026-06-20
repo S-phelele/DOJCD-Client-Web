@@ -46,8 +46,25 @@ code {
 /* Sidebar nav hover */
 [data-nav-btn]:hover:not([data-active="true"]) { background: rgba(255,255,255,0.06) !important; }
 
-/* Button press feedback */
-.btn-press:active { transform: scale(0.97); }
+/* Button press feedback — scale(0.97) on active per skill §2 */
+button:active:not(:disabled) { transform: scale(0.97); }
+a:active { opacity: 0.82; }
 
-/* Selection styling */
+/* ── Skill §7: Animation tokens (150–300ms, ease-out enter / ease-in exit) ── */
+:root {
+  --dur-fast:   150ms;
+  --dur-base:   220ms;
+  --dur-slow:   300ms;
+  --ease-enter: cubic-bezier(0.0, 0.0, 0.2, 1);   /* ease-out: fast → slow */
+  --ease-exit:  cubic-bezier(0.4, 0.0, 1, 1);      /* ease-in:  slow → fast */
+  --ease-std:   cubic-bezier(0.4, 0.0, 0.2, 1);    /* standard */
+}
+
+/* ── Skill §5: Ensure body fills viewport cleanly ── */
+#root { display: flex; flex-direction: column; min-height: 100dvh; }
+
+/* ── Skill §1: Selection styling ── */
 ::selection { background: #1E4FD8; color: #fff; }
+
+/* ── Smooth scroll ── */
+html { scroll-behavior: smooth; }

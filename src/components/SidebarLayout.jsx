@@ -18,6 +18,7 @@ import {
     IoMenuOutline,
     IoCloseOutline,
     IoChevronForward,
+    IoShieldCheckmarkOutline,
 } from 'react-icons/io5';
 
 // ─── Design tokens ────────────────────────────────────────────────────────
@@ -125,7 +126,7 @@ export default function SidebarLayout({ children, unreadCount = 0, user }) {
             {/* Brand */}
             <div style={sb.brand}>
                 <div style={sb.brandIcon}>
-                    <span style={{ fontSize: collapsed ? 18 : 22 }}>⚖️</span>
+                    <IoShieldCheckmarkOutline size={collapsed ? 18 : 22} color="#fff" />
                 </div>
                 {!collapsed && (
                     <div>
@@ -328,7 +329,7 @@ export default function SidebarLayout({ children, unreadCount = 0, user }) {
                         <IoMenuOutline size={24} color={C.white} />
                     </button>
                     <div style={sb.mobileBrand}>
-                        <span style={{ fontSize: 17, marginRight: 8 }}>⚖️</span>
+                        <IoShieldCheckmarkOutline size={17} color="#fff" style={{ marginRight: 8 }} />
                         <span style={sb.mobileBrandText}>DOJCD Connect</span>
                     </div>
                     <button style={sb.mobileIconBtn} onClick={() => navigate('/notifications')}>

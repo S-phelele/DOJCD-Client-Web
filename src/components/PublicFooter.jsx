@@ -73,7 +73,7 @@ export default function PublicFooter() {
                     {/* Brand col */}
                     <div style={S.col}>
                         <div style={S.brand}>
-                            <div style={S.brandIcon}><span style={{ fontSize: 18 }}>⚖️</span></div>
+                            <div style={S.brandIcon}><IoShieldCheckmarkOutline size={18} color="rgba(255,255,255,0.85)" /></div>
                             <div>
                                 <div style={S.brandName}>DOJCD Connect</div>
                                 <div style={S.brandTagline}>Device Procurement Platform</div>
@@ -144,47 +144,51 @@ const S = {
 
     // CTA banner
     cta: {
-        backgroundColor: C.navy,
-        padding: '52px 24px',
+        background: 'linear-gradient(135deg, #0A1628 0%, #0F1F3D 50%, #162C4A 100%)',
+        padding: '60px 24px',
         position: 'relative',
         overflow: 'hidden',
     },
-    ctaRing1: { position: 'absolute', width: 320, height: 320, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.05)', top: -100, right: -80, pointerEvents: 'none' },
-    ctaRing2: { position: 'absolute', width: 200, height: 200, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.05)', bottom: -60, left: -50, pointerEvents: 'none' },
-    ctaInner: { maxWidth: '100%', margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 },
-    ctaTitle: { fontSize: 28, fontWeight: '800', color: '#fff', margin: '0 0 10px', letterSpacing: '-0.2px' },
-    ctaDesc:  { fontSize: 15, color: 'rgba(255,255,255,0.55)', margin: '0 0 28px', lineHeight: 1.7 },
-    ctaBtns:  { display: 'flex', justifyContent: 'center', gap: 12, flexWrap: 'wrap' },
+    ctaRing1: { position: 'absolute', width: 400, height: 400, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.04)', top: -130, right: -100, pointerEvents: 'none' },
+    ctaRing2: { position: 'absolute', width: 240, height: 240, borderRadius: '50%', border: '1px solid rgba(30,79,216,0.12)', bottom: -70, left: -60, pointerEvents: 'none' },
+    ctaInner: { maxWidth: 680, margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 },
+    ctaTitle: { fontSize: 32, fontWeight: '900', color: '#fff', margin: '0 0 12px', letterSpacing: '-0.5px', lineHeight: 1.1 },
+    ctaDesc:  { fontSize: 16, color: 'rgba(255,255,255,0.55)', margin: '0 0 32px', lineHeight: 1.75 },
+    ctaBtns:  { display: 'flex', justifyContent: 'center', gap: 14, flexWrap: 'wrap' },
     ctaPrimary: {
         display: 'flex', alignItems: 'center', gap: 8,
-        backgroundColor: C.accent, padding: '13px 24px', borderRadius: 12,
+        background: 'linear-gradient(135deg, #1E4FD8 0%, #2563EB 100%)',
+        padding: '15px 28px', borderRadius: 14,
         border: 'none', cursor: 'pointer',
-        boxShadow: '0 4px 14px rgba(30,79,216,0.4)',
+        boxShadow: '0 6px 20px rgba(30,79,216,0.45)',
+        transition: 'opacity 0.15s, transform 0.15s',
     },
     ctaPrimaryText: { fontSize: 15, fontWeight: '700', color: '#fff' },
     ctaGhost: {
         display: 'flex', alignItems: 'center', gap: 8,
-        padding: '13px 24px', borderRadius: 12,
-        border: '1px solid rgba(255,255,255,0.2)',
-        background: 'none', cursor: 'pointer',
+        padding: '14px 28px', borderRadius: 14,
+        border: '1.5px solid rgba(255,255,255,0.18)',
+        background: 'rgba(255,255,255,0.05)', cursor: 'pointer',
+        backdropFilter: 'blur(4px)',
+        transition: 'border-color 0.15s, background 0.15s',
     },
-    ctaGhostText: { fontSize: 15, fontWeight: '600', color: 'rgba(255,255,255,0.8)' },
+    ctaGhostText: { fontSize: 15, fontWeight: '600', color: 'rgba(255,255,255,0.82)' },
 
     // Main footer body
-    main: { backgroundColor: C.navyLight, padding: '40px 24px 0' },
+    main: { backgroundColor: C.navyLight, padding: '44px 24px 0' },
     mainInner: {
-        maxWidth: '100%', margin: '0 auto', padding: '0 8px',
+        maxWidth: 1100, margin: '0 auto', padding: '0 8px',
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: 32,
-        paddingBottom: 32,
+        gap: 40,
+        paddingBottom: 36,
     },
 
     col:      { display: 'flex', flexDirection: 'column', gap: 10 },
     colTitle: { fontSize: 11, fontWeight: '700', color: 'rgba(255,255,255,0.45)', letterSpacing: '1.2px', marginBottom: 4 },
 
     brand:       { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 },
-    brandIcon:   { width: 36, height: 36, borderRadius: 10, backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', display: 'flex', justifyContent: 'center', alignItems: 'center' },
+    brandIcon:   { width: 38, height: 38, borderRadius: 11, background: 'linear-gradient(135deg, rgba(30,79,216,0.35) 0%, rgba(255,255,255,0.08) 100%)', border: '1px solid rgba(255,255,255,0.14)', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' },
     brandName:   { fontSize: 15, fontWeight: '800', color: '#fff' },
     brandTagline:{ fontSize: 10, color: 'rgba(255,255,255,0.35)', marginTop: 2, fontWeight: '600', letterSpacing: '0.5px' },
     brandDesc:   { fontSize: 13, color: 'rgba(255,255,255,0.4)', lineHeight: 1.65, margin: 0 },
@@ -193,9 +197,10 @@ const S = {
 
     footerLink: {
         background: 'none', border: 'none', cursor: 'pointer',
-        fontSize: 13, color: 'rgba(255,255,255,0.5)', fontWeight: '500',
-        textAlign: 'left', padding: 0,
-        transition: 'color 0.12s ease',
+        fontSize: 13, color: 'rgba(255,255,255,0.55)', fontWeight: '500',
+        textAlign: 'left', padding: '3px 0',
+        transition: 'color 0.15s ease',
+        letterSpacing: '0.1px',
     },
     contactRow: { display: 'flex', alignItems: 'flex-start', gap: 8 },
     contactText:{ fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 },

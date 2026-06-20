@@ -13,6 +13,7 @@ import {
     IoArrowForward,
     IoChevronForward,
     IoLogInOutline,
+    IoShieldCheckmarkOutline,
 } from 'react-icons/io5';
 
 const C = {
@@ -69,7 +70,7 @@ export default function RegisterScreen() {
             <div style={S.banner}>
                 <div style={S.bannerRing} />
                 <div style={S.bannerContent}>
-                    <div style={S.emblem}><span style={{ fontSize: 30 }}>⚖️</span></div>
+                    <div style={S.emblem}><IoShieldCheckmarkOutline size={28} color="#fff" /></div>
                     <div>
                         <h1 style={S.bannerTitle}>Create Account</h1>
                         <p style={S.bannerSub}>Select your role to get started</p>
@@ -171,11 +172,11 @@ export default function RegisterScreen() {
 const S = {
     root: { minHeight: '100vh', backgroundColor: C.bg, display: 'flex', flexDirection: 'column' },
 
-    banner:        { backgroundColor: C.navy, padding: '24px 20px 20px', position: 'relative', overflow: 'hidden' },
-    bannerRing:    { position: 'absolute', width: 260, height: 260, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.05)', top: -80, right: -60 },
-    bannerContent: { display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20, maxWidth: '100%', margin: '0 auto 20px' },
-    emblem:        { width: 52, height: 52, borderRadius: 14, backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 },
-    bannerTitle:   { fontSize: 22, fontWeight: '800', color: '#fff', margin: '0 0 3px' },
+    banner:        { background: 'linear-gradient(135deg, #0D1B35 0%, #0F1F3D 100%)', padding: '28px 24px 22px', position: 'relative', overflow: 'hidden' },
+    bannerRing:    { position: 'absolute', width: 300, height: 300, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.04)', top: -100, right: -80 },
+    bannerContent: { display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20, maxWidth: 680, margin: '0 auto 20px' },
+    emblem:        { width: 56, height: 56, borderRadius: 16, background: 'linear-gradient(135deg, rgba(30,79,216,0.5) 0%, rgba(255,255,255,0.08) 100%)', border: '1px solid rgba(255,255,255,0.16)', display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0, boxShadow: '0 4px 14px rgba(30,79,216,0.3)' },
+    bannerTitle:   { fontSize: 24, fontWeight: '900', color: '#fff', margin: '0 0 4px', letterSpacing: '-0.3px' },
     bannerSub:     { fontSize: 12, color: 'rgba(255,255,255,0.5)', margin: 0 },
 
     stepRow:       { display: 'flex', alignItems: 'flex-start', justifyContent: 'center', maxWidth: '100%', margin: '0 auto' },

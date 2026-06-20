@@ -22,6 +22,8 @@ import {
     IoGlobeOutline,
     IoTimeOutline,
     IoArrowDownOutline,
+    IoBriefcaseOutline,
+    IoGridOutline,
 } from 'react-icons/io5';
 
 // ─── Design tokens ──────────────────────────────────────────────────────────
@@ -86,10 +88,10 @@ const CAPABILITIES = [
 ];
 
 const USER_TYPES = [
-    { icon: '⚖️', title: 'Magistrates',           desc: 'Senior court officials eligible for departmentally-issued devices.' },
-    { icon: '🧑‍⚖️', title: 'Advocates',             desc: 'State advocates and prosecutors working within DOJCD courts.' },
-    { icon: '🗂️', title: 'Administrative Staff',   desc: 'Department personnel requiring devices for daily operations.' },
-    { icon: '💻', title: 'ICT & Operations',       desc: 'Internal teams responsible for procurement and device management.' },
+    { icon: IoShieldCheckmarkOutline, color: '#1E4FD8', bg: '#EBF0FF', title: 'Magistrates',           desc: 'Senior court officials eligible for departmentally-issued devices.' },
+    { icon: IoBriefcaseOutline,       color: '#059669', bg: '#D1FAE5', title: 'Advocates',             desc: 'State advocates and prosecutors working within DOJCD courts.' },
+    { icon: IoPeopleOutline,          color: '#7C3AED', bg: '#EDE9FE', title: 'Administrative Staff',  desc: 'Department personnel requiring devices for daily operations.' },
+    { icon: IoServerOutline,          color: '#D97706', bg: '#FEF3C7', title: 'ICT & Operations',      desc: 'Internal teams responsible for procurement and device management.' },
 ];
 
 const STATS = [
@@ -178,7 +180,7 @@ export default function WelcomeScreen() {
                     <div className="wc0" style={S.heroEmblemWrap}>
                         <div style={S.heroGlow} />
                         <div style={S.heroEmblem}>
-                            <span style={{ fontSize: 52 }}>⚖️</span>
+                            <IoShieldCheckmarkOutline size={56} color="#fff" />
                         </div>
                     </div>
 
@@ -295,13 +297,17 @@ export default function WelcomeScreen() {
                     </div>
 
                     <div style={S.userGrid}>
-                        {USER_TYPES.map((u, i) => (
+                        {USER_TYPES.map((u, i) => {
+                            const UserIcon = u.icon;
+                            return (
                             <div key={i} className="wusr" style={S.userCard}>
-                                <div style={S.userEmoji}>{u.icon}</div>
+                                <div style={{ ...S.userEmoji, backgroundColor: u.bg }}>
+                                    <UserIcon size={24} color={u.color} />
+                                </div>
                                 <div style={S.userTitle}>{u.title}</div>
                                 <div style={S.userDesc}>{u.desc}</div>
                             </div>
-                        ))}
+                        );})}
                     </div>
 
                     {/* Eligibility note */}
@@ -373,17 +379,18 @@ const S = {
         marginBottom: 32,
     },
 
-    heroEmblemWrap: { position: 'relative', marginBottom: 24 },
+    heroEmblemWrap: { position: 'relative', marginBottom: 28 },
     heroGlow: {
-        position: 'absolute', inset: -18, borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(201,168,76,0.22) 0%, transparent 70%)',
+        position: 'absolute', inset: -22, borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(30,79,216,0.35) 0%, transparent 70%)',
         pointerEvents: 'none',
     },
     heroEmblem: {
-        width: 104, height: 104, borderRadius: 28,
-        backgroundColor: 'rgba(255,255,255,0.08)',
-        border: '1px solid rgba(255,255,255,0.15)',
+        width: 108, height: 108, borderRadius: 32,
+        background: 'linear-gradient(135deg, rgba(30,79,216,0.45) 0%, rgba(255,255,255,0.08) 100%)',
+        border: '1.5px solid rgba(255,255,255,0.2)',
         display: 'flex', justifyContent: 'center', alignItems: 'center',
+        boxShadow: '0 10px 36px rgba(30,79,216,0.35)',
     },
 
     heroTitle: {
@@ -497,25 +504,29 @@ const S = {
     // ── Who uses ──
     userGrid: {
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-        gap: 14,
-        marginBottom: 24,
+        gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))',
+        gap: 16,
+        marginBottom: 28,
+        maxWidth: 1000,
+        margin: '0 auto 28px',
     },
     userCard: {
-        backgroundColor: 'rgba(255,255,255,0.06)',
-        border: '1px solid rgba(255,255,255,0.1)',
-        borderRadius: 16, padding: '22px 20px',
+        backgroundColor: 'rgba(255,255,255,0.05)',
+        border: '1px solid rgba(255,255,255,0.09)',
+        borderRadius: 18, padding: '24px 22px',
         cursor: 'default',
+        backdropFilter: 'blur(4px)',
     },
-    userEmoji: { fontSize: 28, marginBottom: 12 },
-    userTitle: { fontSize: 15, fontWeight: '800', color: '#fff', marginBottom: 6 },
-    userDesc:  { fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.6 },
+    userEmoji: { width: 52, height: 52, borderRadius: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 16 },
+    userTitle: { fontSize: 15, fontWeight: '800', color: '#fff', marginBottom: 7, letterSpacing: '-0.1px' },
+    userDesc:  { fontSize: 13, color: 'rgba(255,255,255,0.52)', lineHeight: 1.65 },
 
     eligNote: {
         display: 'flex', alignItems: 'flex-start', gap: 10,
-        backgroundColor: 'rgba(5,150,105,0.12)',
-        border: '1px solid rgba(5,150,105,0.25)',
-        padding: '14px 18px', borderRadius: 12,
+        backgroundColor: 'rgba(5,150,105,0.1)',
+        border: '1px solid rgba(5,150,105,0.22)',
+        padding: '16px 20px', borderRadius: 14,
+        maxWidth: 1000, margin: '0 auto',
     },
-    eligText: { fontSize: 13, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 },
+    eligText: { fontSize: 13, color: 'rgba(255,255,255,0.62)', lineHeight: 1.65 },
 };

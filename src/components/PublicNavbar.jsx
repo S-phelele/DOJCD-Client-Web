@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { IoMenuOutline, IoCloseOutline } from 'react-icons/io5';
+import { IoMenuOutline, IoCloseOutline, IoShieldCheckmarkOutline } from 'react-icons/io5';
 
 const C = {
     navy: '#0F1F3D', accent: '#1E4FD8', surface: '#FFFFFF',
@@ -48,7 +48,7 @@ export default function PublicNavbar() {
                 <div className="anb-inner">
                     {/* Logo */}
                     <button className="anb-logo" onClick={() => go('/')}>
-                        <span className="anb-logo-icon">⚖️</span>
+                        <span className="anb-logo-icon"><IoShieldCheckmarkOutline size={20} color="#fff" /></span>
                         <span className="anb-logo-text">
                             <strong>DOJCD</strong>
                             <small>Connect</small>
@@ -104,9 +104,9 @@ const navbarCSS = `
   .anb-scrolled { box-shadow: 0 2px 18px rgba(15,31,61,0.13); }
 
   .anb-inner {
-    max-width: 100%; margin: 0 auto; height: 64px;
+    max-width: 1200px; margin: 0 auto; height: 64px;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0 24px;
+    padding: 0 28px;
   }
 
   /* Logo */
@@ -115,16 +115,16 @@ const navbarCSS = `
     background: none; border: none; cursor: pointer; padding: 0; text-decoration: none;
   }
   .anb-logo-icon {
-    width: 38px; height: 38px; border-radius: 10px;
-    background: #0F1F3D;
+    width: 38px; height: 38px; border-radius: 11px;
+    background: linear-gradient(135deg, #0F1F3D 0%, #1E3A5F 100%);
     display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
+    box-shadow: 0 2px 8px rgba(15,31,61,0.25);
   }
   .anb-logo-text {
     display: flex; flex-direction: column; align-items: flex-start; line-height: 1;
   }
   .anb-logo-text strong { font-size: 16px; font-weight: 900; color: #0F1F3D; letter-spacing: 0.4px; }
-  .anb-logo-text small  { font-size: 10px; font-weight: 600; color: #64748B; letter-spacing: 0.3px; margin-top: 2px; }
+  .anb-logo-text small  { font-size: 10px; font-weight: 600; color: #64748B; letter-spacing: 0.5px; margin-top: 3px; text-transform: uppercase; }
 
   /* Desktop links */
   .anb-links { display: flex; align-items: center; gap: 8px; }
@@ -157,11 +157,12 @@ const navbarCSS = `
 
   /* Filled variant */
   .anb-btn-filled {
-    background: #0F1F3D; color: #fff;
-    box-shadow: 0 3px 8px rgba(15,31,61,0.22);
+    background: linear-gradient(135deg, #1E4FD8 0%, #2563EB 100%); color: #fff;
+    box-shadow: 0 3px 12px rgba(30,79,216,0.35);
     border: none !important;
+    padding: 8px 16px;
   }
-  .anb-btn-filled:hover { opacity: 0.88; }
+  .anb-btn-filled:hover { opacity: 0.88; transform: translateY(-1px); box-shadow: 0 5px 16px rgba(30,79,216,0.45); }
 
   /* Hamburger — hidden on desktop */
   .anb-burger {
@@ -173,27 +174,27 @@ const navbarCSS = `
   /* Mobile drawer */
   .anb-drawer {
     border-top: 1px solid #E2E8F2; background: #fff;
-    padding: 12px 20px 20px;
+    padding: 14px 20px 24px;
     display: flex; flex-direction: column; gap: 4px;
   }
   .anb-mob-item {
     font-family: inherit; text-align: left; background: none;
     border: none; cursor: pointer;
     font-size: 15px; font-weight: 600; color: #64748B;
-    padding: 13px 12px; border-radius: 10px;
-    transition: background 0.15s ease;
+    padding: 14px 14px; border-radius: 12px;
+    transition: background 0.15s ease, color 0.15s ease;
   }
-  .anb-mob-item:hover { background: #F4F6FA; }
+  .anb-mob-item:hover { background: #F4F6FA; color: #0F1F3D; }
   .anb-mob-active { color: #0F1F3D; }
   .anb-mob-filled {
-    background: #0F1F3D; color: #fff;
-    border-radius: 12px; padding: 14px 16px; margin-top: 6px;
-    box-shadow: 0 3px 8px rgba(15,31,61,0.2);
+    background: linear-gradient(135deg, #1E4FD8 0%, #2563EB 100%); color: #fff;
+    border-radius: 12px; padding: 15px 16px; margin-top: 8px;
+    box-shadow: 0 4px 14px rgba(30,79,216,0.35);
   }
-  .anb-mob-filled:hover { opacity: 0.88; background: #0F1F3D; }
+  .anb-mob-filled:hover { opacity: 0.88; }
   .anb-mob-outline {
     border: 1.5px solid #0F1F3D;
-    color: #0F1F3D; border-radius: 10px;
+    color: #0F1F3D; border-radius: 12px;
   }
 
   /* Responsive breakpoint */

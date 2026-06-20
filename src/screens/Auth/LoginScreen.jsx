@@ -101,7 +101,7 @@ export default function LoginScreen() {
                 <div style={S.bannerRing1} />
                 <div style={S.bannerRing2} />
                 <div style={S.bannerContent}>
-                    <div style={S.bannerEmblem}><span style={{ fontSize: 28 }}>⚖️</span></div>
+                    <div style={S.bannerEmblem}><IoShieldCheckmarkOutline size={28} color="#fff" /></div>
                     <div>
                         <h1 style={S.bannerTitle}>Welcome Back</h1>
                         <p style={S.bannerSub}>Sign in to your DOJCD Connect account</p>

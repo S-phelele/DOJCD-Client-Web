@@ -416,7 +416,7 @@ export default function ClientRegisterScreen() {
                     <button style={headerStyles.backBtn} onClick={() => navigate(-1)}>
                         <IoArrowBack size={22} color="rgba(255,255,255,0.9)" />
                     </button>
-                    <div style={headerStyles.emblem}><span style={{ fontSize: 22 }}>⚖️</span></div>
+                    <div style={headerStyles.emblem}><IoShieldCheckmarkOutline size={24} color="#fff" /></div>
                     <div>
                         <div style={headerStyles.title}>Client Registration</div>
                         <div style={headerStyles.sub}>Create your account to request devices</div>
@@ -466,13 +466,13 @@ export default function ClientRegisterScreen() {
 }
 
 const headerStyles = {
-    wrap:      { backgroundColor: C.navy, paddingTop: 12, paddingBottom: 16, paddingLeft: 20, paddingRight: 20, position: 'relative', overflow: 'hidden' },
-    ring:      { position: 'absolute', width: 240, height: 240, borderRadius: 120, border: '1px solid rgba(255,255,255,0.05)', top: -80, right: -60 },
-    backBtn:   { width: 38, height: 38, borderRadius: 11, backgroundColor: 'rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'center', alignItems: 'center', border: 'none', cursor: 'pointer', flexShrink: 0 },
-    titleRow:  { display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, maxWidth: 640, margin: '0 auto 16px' },
-    emblem:    { width: 44, height: 44, borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 },
-    title:     { fontSize: 18, fontWeight: '800', color: '#fff', marginBottom: 2 },
-    sub:       { fontSize: 11, color: 'rgba(255,255,255,0.5)' },
+    wrap:      { background: 'linear-gradient(135deg, #0D1B35 0%, #0F1F3D 100%)', paddingTop: 16, paddingBottom: 18, paddingLeft: 24, paddingRight: 24, position: 'relative', overflow: 'hidden' },
+    ring:      { position: 'absolute', width: 300, height: 300, borderRadius: 150, border: '1px solid rgba(255,255,255,0.04)', top: -100, right: -80 },
+    backBtn:   { width: 40, height: 40, borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', flexShrink: 0, transition: 'background 0.15s' },
+    titleRow:  { display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20, maxWidth: 640, margin: '0 auto 20px' },
+    emblem:    { width: 50, height: 50, borderRadius: 15, background: 'linear-gradient(135deg, rgba(30,79,216,0.5) 0%, rgba(255,255,255,0.08) 100%)', border: '1px solid rgba(255,255,255,0.16)', display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0, boxShadow: '0 4px 14px rgba(30,79,216,0.3)' },
+    title:     { fontSize: 20, fontWeight: '900', color: '#fff', marginBottom: 3, letterSpacing: '-0.2px' },
+    sub:       { fontSize: 11, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.2px' },
 };
 
 const stepContentStyles = {
@@ -503,7 +503,7 @@ const stepContentStyles = {
 const navStyles = {
     row:          { display: 'flex', gap: 12, marginBottom: 16, maxWidth: 640, margin: '0 auto 16px' },
     back:         { flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, padding: '15px 0', borderRadius: 16, border: `1.5px solid ${C.navy}`, backgroundColor: C.surface, cursor: 'pointer', fontWeight: '700', color: C.navy },
-    next:         { flex: 2, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, backgroundColor: C.navy, padding: '16px 0', borderRadius: 16, boxShadow: '0 5px 10px rgba(15,31,61,0.25)', cursor: 'pointer', color: '#fff', fontWeight: '700', border: 'none' },
+    next:         { flex: 2, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, background: 'linear-gradient(135deg, #0F1F3D 0%, #1E3A5F 100%)', padding: '16px 0', borderRadius: 16, boxShadow: '0 5px 16px rgba(15,31,61,0.3)', cursor: 'pointer', color: '#fff', fontWeight: '700', border: 'none', transition: 'opacity 0.15s' },
     nextFull:     { flex: 1 },
     submit:       { flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 10, backgroundColor: C.green, padding: '16px 0', borderRadius: 16, boxShadow: '0 5px 10px rgba(5,150,105,0.25)', cursor: 'pointer', color: '#fff', fontWeight: '700', border: 'none' },
     submitLoading:{ backgroundColor: C.disabled, boxShadow: 'none', cursor: 'not-allowed' },
