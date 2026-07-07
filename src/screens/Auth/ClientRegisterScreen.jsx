@@ -80,16 +80,33 @@ const COUNTRY_CODE = '+27';
 const validateSouthAfricanID = (idNumber) => {
     const cleanId = idNumber.replace(/\s/g, '');
     if (!/^\d{13}$/.test(cleanId)) return 'ID number must be 13 digits';
+
+    // Date-of-birth check (first 6 digits: YYMMDD)
     const year  = parseInt(cleanId.substring(0, 2));
     const month = parseInt(cleanId.substring(2, 4));
     const day   = parseInt(cleanId.substring(4, 6));
     if (month < 1 || month > 12) return 'Invalid month in ID number';
     if (day < 1 || day > 31)     return 'Invalid day in ID number';
-    const fullYear = year < 22 ? 2000 + year : 1900 + year;
+    const fullYear = year < 30 ? 2000 + year : 1900 + year;
     const date = new Date(fullYear, month - 1, day);
     if (date.getFullYear() !== fullYear || date.getMonth() + 1 !== month || date.getDate() !== day)
         return 'Invalid date of birth in ID number';
     if (date > new Date()) return 'Date of birth cannot be in the future';
+
+    // Citizenship digit (index 10): 0 = SA citizen, 1 = permanent resident
+    const citizenship = parseInt(cleanId[10]);
+    if (citizenship !== 0 && citizenship !== 1)
+        return 'Invalid citizenship digit in ID number';
+
+    // Luhn checksum — South African Department of Home Affairs standard
+    const oddSum = [0,2,4,6,8,10].reduce((s, i) => s + parseInt(cleanId[i]), 0);
+    const evenDigits = [1,3,5,7,9,11].map(i => cleanId[i]).join('');
+    const evenDoubled = (parseInt(evenDigits) * 2).toString();
+    const evenSum = evenDoubled.split('').reduce((s, c) => s + parseInt(c), 0);
+    const checkDigit = (10 - ((oddSum + evenSum) % 10)) % 10;
+    if (checkDigit !== parseInt(cleanId[12]))
+        return 'ID number is not a valid South African ID (checksum failed)';
+
     return null;
 };
 
@@ -128,7 +145,7 @@ const fieldStyles = {
     hintText:  { fontSize: 11, color: C.muted, marginTop: 4, marginLeft: 4, fontStyle: 'italic' },
 };
 
-const PasswordField = ({ label, value, onChangeText, error, showPassword, onToggleVisibility, onBlur, editable = true }) => {
+const PasswordField = ({ label, value, onChangeText, error, showPassword, onToggleVisibility, onBlur, editable = true, autoComplete, name }) => {
     const [focused, setFocused] = useState(false);
     const handleChange = (e) => onChangeText(e.target.value);
     return (
@@ -136,7 +153,7 @@ const PasswordField = ({ label, value, onChangeText, error, showPassword, onTogg
             <div style={fieldStyles.label}>{label.toUpperCase()}</div>
             <div style={{ ...fieldStyles.inputRow, ...(focused && fieldStyles.inputFocused), ...(error && fieldStyles.inputError) }}>
                 <IoLockClosedOutline size={17} style={fieldStyles.ico} color={error ? C.error : focused ? C.accent : C.muted} />
-                <input type={showPassword ? 'text' : 'password'} style={fieldStyles.input} placeholder="Enter password" value={value} onChange={handleChange} disabled={!editable} onFocus={() => setFocused(true)} onBlur={() => { setFocused(false); onBlur?.(); }} autoCapitalize="off" autoCorrect="off" />
+                <input type={showPassword ? 'text' : 'password'} style={fieldStyles.input} placeholder="Enter password" value={value} onChange={handleChange} disabled={!editable} onFocus={() => setFocused(true)} onBlur={() => { setFocused(false); onBlur?.(); }} autoCapitalize="off" autoCorrect="off" autoComplete={autoComplete} name={name} />
                 <button type="button" onClick={onToggleVisibility} disabled={!editable} style={{ padding: '0 14px', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
                     {showPassword ? <IoEyeOffOutline size={20} /> : <IoEyeOutline size={20} />}
                 </button>
@@ -319,10 +336,10 @@ export default function ClientRegisterScreen() {
                         <div><div style={stepContentStyles.stepTitle}>Personal Information</div><div style={stepContentStyles.stepSub}>Tell us about yourself</div></div>
                     </div>
                     <SelectField label="Title" value={formData.title} placeholder="Select your title" onSelect={v => { setFormData({ ...formData, title: v }); setErrors(p => ({ ...p, title: '' })); }} editable={!loading} options={TITLES} error={errors.title} icon="person-circle-outline" />
-                    <Field label="First Name *" placeholder="Enter your first name" value={formData.firstName} editable={!loading} onChangeText={t => setFormData({ ...formData, firstName: t })} onBlur={() => setErrors(p => ({ ...p, firstName: !formData.firstName ? 'First name is required' : '' }))} error={errors.firstName} icon="text-outline" />
-                    <Field label="Last Name *" placeholder="Enter your last name" value={formData.lastName} editable={!loading} onChangeText={t => setFormData({ ...formData, lastName: t })} onBlur={() => setErrors(p => ({ ...p, lastName: !formData.lastName ? 'Last name is required' : '' }))} error={errors.lastName} icon="text-outline" />
-                    <Field label="Email Address *" placeholder="your.email@dojcd.gov.za" type="email" value={formData.email} editable={!loading} onChangeText={t => setFormData({ ...formData, email: t })} onBlur={() => { if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) setErrors(p => ({ ...p, email: 'Please enter a valid email address' })); }} error={errors.email} icon="mail-outline" />
-                    <Field label="Phone Number" placeholder="+27 XXX XXX XXX" type="tel" value={formData.phoneNumber} editable={!loading} onChangeText={handlePhoneNumberChange} error={errors.phoneNumber} icon="call-outline" hint="South African number — 9 digits after +27" />
+                    <Field label="First Name *" placeholder="Enter your first name" value={formData.firstName} editable={!loading} onChangeText={t => setFormData({ ...formData, firstName: t })} onBlur={() => setErrors(p => ({ ...p, firstName: !formData.firstName ? 'First name is required' : '' }))} error={errors.firstName} icon="text-outline" autoComplete="given-name" name="firstName" />
+                    <Field label="Last Name *" placeholder="Enter your last name" value={formData.lastName} editable={!loading} onChangeText={t => setFormData({ ...formData, lastName: t })} onBlur={() => setErrors(p => ({ ...p, lastName: !formData.lastName ? 'Last name is required' : '' }))} error={errors.lastName} icon="text-outline" autoComplete="family-name" name="lastName" />
+                    <Field label="Email Address *" placeholder="your.email@dojcd.gov.za" type="email" value={formData.email} editable={!loading} onChangeText={t => setFormData({ ...formData, email: t })} onBlur={() => { if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) setErrors(p => ({ ...p, email: 'Please enter a valid email address' })); }} error={errors.email} icon="mail-outline" autoComplete="email" name="email" />
+                    <Field label="Phone Number" placeholder="+27 XXX XXX XXX" type="tel" value={formData.phoneNumber} editable={!loading} onChangeText={handlePhoneNumberChange} error={errors.phoneNumber} icon="call-outline" hint="South African number — 9 digits after +27" autoComplete="tel" name="phone" />
                 </>
             );
             case 2: return (
@@ -354,8 +371,8 @@ export default function ClientRegisterScreen() {
                         <div style={{ ...stepContentStyles.stepIco, backgroundColor: C.accentSoft }}><IoLockClosedOutline size={20} color={C.accent} /></div>
                         <div><div style={stepContentStyles.stepTitle}>Create Password</div><div style={stepContentStyles.stepSub}>Secure your account</div></div>
                     </div>
-                    <PasswordField label="Password *" value={formData.password} onChangeText={t => { setFormData({ ...formData, password: t }); setErrors(p => ({ ...p, password: '' })); }} error={errors.password} showPassword={showPassword} onToggleVisibility={() => setShowPassword(v => !v)} editable={!loading} />
-                    <PasswordField label="Confirm Password *" value={formData.confirmPassword} onChangeText={t => { setFormData({ ...formData, confirmPassword: t }); setErrors(p => ({ ...p, confirmPassword: '' })); }} error={errors.confirmPassword} showPassword={showConfirmPassword} onToggleVisibility={() => setShowConfirmPassword(v => !v)} editable={!loading} />
+                    <PasswordField label="Password *" value={formData.password} onChangeText={t => { setFormData({ ...formData, password: t }); setErrors(p => ({ ...p, password: '' })); }} error={errors.password} showPassword={showPassword} onToggleVisibility={() => setShowPassword(v => !v)} editable={!loading} autoComplete="new-password" name="password" />
+                    <PasswordField label="Confirm Password *" value={formData.confirmPassword} onChangeText={t => { setFormData({ ...formData, confirmPassword: t }); setErrors(p => ({ ...p, confirmPassword: '' })); }} error={errors.confirmPassword} showPassword={showConfirmPassword} onToggleVisibility={() => setShowConfirmPassword(v => !v)} editable={!loading} autoComplete="new-password" name="confirmPassword" />
                     <div style={stepContentStyles.reqCard}>
                         <div style={stepContentStyles.reqTitle}>Password must:</div>
                         {[

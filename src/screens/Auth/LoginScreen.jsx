@@ -120,19 +120,22 @@ export default function LoginScreen() {
                         <h2 style={S.cardTitle}>Sign In</h2>
                         <p style={S.cardSub}>Enter your credentials to continue</p>
 
+                        {/* Wrapping in <form> lets the browser offer "Save password?" on success */}
+                        <form onSubmit={e => { e.preventDefault(); handleLogin(); }} autoComplete="on">
+
                         {/* Email */}
                         <div style={S.fieldWrap}>
                             <label style={S.label}>EMAIL ADDRESS</label>
                             <div style={{ ...S.inputRow, ...(focused === 'email' ? S.inputFocused : {}), ...(errors.email ? S.inputError : {}) }}>
                                 <IoMailOutline size={18} color={errors.email ? C.error : focused === 'email' ? C.accent : C.muted} style={S.icoL} />
                                 <input
-                                    type="email" style={S.input}
+                                    type="email" name="email" autoComplete="email"
+                                    style={S.input}
                                     placeholder="your.email@dojcd.gov.za"
                                     autoCapitalize="off" value={formData.email}
                                     onFocus={() => setFocused('email')} onBlur={() => setFocused(null)}
                                     onChange={e => { setFormData({ ...formData, email: e.target.value }); if (errors.email) setErrors({ ...errors, email: '' }); }}
                                     disabled={loading}
-                                    onKeyDown={e => e.key === 'Enter' && handleLogin()}
                                 />
                             </div>
                             {errors.email && <div style={S.errText}>{errors.email}</div>}
@@ -144,12 +147,13 @@ export default function LoginScreen() {
                             <div style={{ ...S.inputRow, ...(focused === 'pass' ? S.inputFocused : {}), ...(errors.password ? S.inputError : {}) }}>
                                 <IoLockClosedOutline size={18} color={errors.password ? C.error : focused === 'pass' ? C.accent : C.muted} style={S.icoL} />
                                 <input
-                                    type={showPassword ? 'text' : 'password'} style={S.input}
+                                    type={showPassword ? 'text' : 'password'}
+                                    name="password" autoComplete="current-password"
+                                    style={S.input}
                                     placeholder="Enter your password" value={formData.password}
                                     onFocus={() => setFocused('pass')} onBlur={() => setFocused(null)}
                                     onChange={e => { setFormData({ ...formData, password: e.target.value }); if (errors.password) setErrors({ ...errors, password: '' }); }}
                                     disabled={loading}
-                                    onKeyDown={e => e.key === 'Enter' && handleLogin()}
                                 />
                                 <button type="button" onClick={() => setShowPassword(!showPassword)} style={S.eyeBtn}>
                                     {showPassword ? <IoEyeOffOutline size={20} color={C.muted} /> : <IoEyeOutline size={20} color={C.muted} />}
@@ -171,8 +175,8 @@ export default function LoginScreen() {
                             </button>
                         </div>
 
-                        {/* Submit */}
-                        <button type="button" style={{ ...S.submitBtn, ...(loading ? S.submitDisabled : {}) }} onClick={handleLogin} disabled={loading}>
+                        {/* Submit — type="submit" triggers the browser password-save prompt */}
+                        <button type="submit" style={{ ...S.submitBtn, ...(loading ? S.submitDisabled : {}) }} disabled={loading}>
                             {loading ? (
                                 <div style={S.spinner} />
                             ) : (
@@ -182,6 +186,8 @@ export default function LoginScreen() {
                                 </>
                             )}
                         </button>
+
+                        </form>
 
                         {/* Divider */}
                         <div style={S.divider}>
