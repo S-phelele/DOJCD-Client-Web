@@ -200,18 +200,18 @@ export default function DeviceCatalogScreen() {
 
     if (loading) {
         return (
-            <div style={{ backgroundColor: C.bg, minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ backgroundColor: '#F0F4FA', minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
                 <SkeletonShimmerStyle />
                 {/* Header */}
-                <div style={{ backgroundColor: C.surface, borderBottom: `1px solid ${C.border}`, padding: '18px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 1px 4px rgba(15,31,61,0.06)' }}>
+                <div style={{ background: 'linear-gradient(135deg, #0A1628, #0F1F3D)', padding: '0 28px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                        <Sk w={44} h={44} r={13} />
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                            <Sk w={160} h={18} r={8} />
-                            <Sk w={110} h={12} r={6} />
+                        <Sk w={38} h={38} r={11} style={{ background: 'rgba(255,255,255,0.15)', animation: 'none' }} />
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+                            <Sk w={160} h={17} r={8} style={{ background: 'rgba(255,255,255,0.15)', animation: 'none' }} />
+                            <Sk w={110} h={11} r={5} style={{ background: 'rgba(255,255,255,0.1)', animation: 'none' }} />
                         </div>
                     </div>
-                    <Sk w={82} h={36} r={10} />
+                    <Sk w={80} h={34} r={10} style={{ background: 'rgba(255,255,255,0.15)', animation: 'none' }} />
                 </div>
                 {/* Search bar */}
                 <div style={{ padding: '16px 28px 0', maxWidth: 1280, width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
@@ -273,7 +273,7 @@ export default function DeviceCatalogScreen() {
                 <div style={S.pageHeader}>
                     <div style={S.pageHeaderLeft}>
                         <div style={S.pageHeaderIcon}>
-                            <IoPhonePortraitOutline size={20} color={C.accent} />
+                            <IoPhonePortraitOutline size={20} color="rgba(255,255,255,0.9)" />
                         </div>
                         <div>
                             <h1 style={S.pageTitle}>Device Catalogue</h1>
@@ -394,20 +394,20 @@ export default function DeviceCatalogScreen() {
 }
 
 const S = {
-    root:   { backgroundColor: C.bg, minHeight: '100%', display: 'flex', flexDirection: 'column' },
-    center: { flex: 1, minHeight: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: 40, backgroundColor: C.bg },
+    root:   { backgroundColor: '#F0F4FA', minHeight: '100%', display: 'flex', flexDirection: 'column' },
+    center: { flex: 1, minHeight: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: 40, backgroundColor: '#F0F4FA' },
 
     gateIcon:  { width: 68, height: 68, borderRadius: 18, backgroundColor: C.amberSoft, display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 18 },
     gateTitle: { fontSize: 20, fontWeight: '800', color: C.text, marginBottom: 8 },
     gateSub:   { fontSize: 14, color: C.muted, textAlign: 'center', lineHeight: 1.5, marginBottom: 24, maxWidth: 320 },
     gateBtn:   { backgroundColor: C.navy, padding: '12px 22px', borderRadius: 12, border: 'none', color: '#fff', fontWeight: '700', fontSize: 14, cursor: 'pointer' },
 
-    pageHeader:     { backgroundColor: C.surface, borderBottom: `1px solid ${C.border}`, padding: '18px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 1px 4px rgba(15,31,61,0.06)' },
+    pageHeader:     { background: 'linear-gradient(135deg, #0A1628 0%, #0F1F3D 100%)', padding: '0 28px', minHeight: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 2px 16px rgba(10,22,40,0.4)' },
     pageHeaderLeft: { display: 'flex', alignItems: 'center', gap: 14 },
-    pageHeaderIcon: { width: 44, height: 44, borderRadius: 13, background: 'linear-gradient(135deg, #EBF0FF 0%, #D4E0FF 100%)', display: 'flex', justifyContent: 'center', alignItems: 'center' },
-    pageTitle:      { fontSize: 20, fontWeight: '800', color: C.text, margin: 0, letterSpacing: '-0.2px' },
-    pageSub:        { fontSize: 12, color: C.muted, marginTop: 2 },
-    refreshBtn:     { padding: '8px 16px', borderRadius: 10, border: `1px solid ${C.border}`, background: C.surface, cursor: 'pointer', fontSize: 13, color: C.muted, fontWeight: '600', transition: 'background 0.15s' },
+    pageHeaderIcon: { width: 38, height: 38, borderRadius: 11, backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.14)', display: 'flex', justifyContent: 'center', alignItems: 'center' },
+    pageTitle:      { fontSize: 17, fontWeight: '800', color: '#fff', margin: 0, letterSpacing: '-0.2px' },
+    pageSub:        { fontSize: 11, color: 'rgba(255,255,255,0.5)', marginTop: 1 },
+    refreshBtn:     { padding: '7px 14px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.18)', background: 'rgba(255,255,255,0.1)', cursor: 'pointer', fontSize: 13, color: '#fff', fontWeight: '600' },
 
     searchWrap: { padding: '16px 28px 0', maxWidth: 1280, width: '100%', alignSelf: 'center', boxSizing: 'border-box' },
     searchBar:  { display: 'flex', alignItems: 'center', gap: 10, backgroundColor: C.surface, border: `1.5px solid ${C.border}`, borderRadius: 14, padding: '11px 16px', boxShadow: '0 1px 4px rgba(15,31,61,0.04)' },

@@ -206,7 +206,7 @@ export default function ProfileScreen() {
             {/* Page header */}
             <div style={S.header}>
                 <div style={S.headerLeft}>
-                    <div style={S.headerIcon}><IoPersonOutline size={20} color={C.accent} /></div>
+                    <div style={S.headerIcon}><IoPersonOutline size={20} color="rgba(255,255,255,0.9)" /></div>
                     <div>
                         <h1 style={S.headerTitle}>My Profile</h1>
                         <p style={S.headerSub}>Account information and profile settings</p>
@@ -389,20 +389,20 @@ export default function ProfileScreen() {
 }
 
 const S = {
-    root: { backgroundColor: C.bg, display: 'flex', flexDirection: 'column', minHeight: '100%' },
+    root: { backgroundColor: '#F0F4FA', display: 'flex', flexDirection: 'column', minHeight: '100%' },
 
     header: {
-        backgroundColor: C.surface,
-        borderBottom: `1px solid ${C.border}`,
-        padding: '18px 28px',
+        background: 'linear-gradient(135deg, #0A1628 0%, #0F1F3D 100%)',
+        padding: '0 28px',
+        minHeight: 64,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         position: 'sticky', top: 0, zIndex: 50,
-        boxShadow: '0 1px 4px rgba(15,31,61,0.06)',
+        boxShadow: '0 2px 16px rgba(10,22,40,0.4)',
     },
     headerLeft:  { display: 'flex', alignItems: 'center', gap: 14 },
-    headerIcon:  { width: 44, height: 44, borderRadius: 13, background: 'linear-gradient(135deg, #EBF0FF 0%, #D4E0FF 100%)', display: 'flex', justifyContent: 'center', alignItems: 'center' },
-    headerTitle: { fontSize: 20, fontWeight: '800', color: C.text, margin: 0, letterSpacing: '-0.2px' },
-    headerSub:   { fontSize: 12, color: C.muted, marginTop: 2 },
+    headerIcon:  { width: 38, height: 38, borderRadius: 11, backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.14)', display: 'flex', justifyContent: 'center', alignItems: 'center' },
+    headerTitle: { fontSize: 17, fontWeight: '800', color: '#fff', margin: 0, letterSpacing: '-0.2px' },
+    headerSub:   { fontSize: 11, color: 'rgba(255,255,255,0.5)', marginTop: 1 },
 
     body: { flex: 1, padding: '24px 28px 48px', display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 900, width: '100%', alignSelf: 'center', boxSizing: 'border-box' },
 

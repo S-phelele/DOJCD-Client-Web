@@ -173,66 +173,69 @@ export default function ClientDashboard() {
 
     // ── Loading skeleton ──────────────────────────────────────────────────
     if (loading) {
-        const skBg = { backgroundColor: C.surface, borderRadius: 16, padding: '18px 16px', border: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', gap: 10 };
         return (
-            <div style={{ backgroundColor: C.bg, minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ backgroundColor: '#F0F4FA', minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
                 <SkeletonShimmerStyle />
-                {/* Header */}
-                <div style={{ backgroundColor: C.surface, borderBottom: `1px solid ${C.border}`, padding: '18px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 1px 4px rgba(15,31,61,0.06)' }}>
+                {/* Dark header skeleton */}
+                <div style={{ background: 'linear-gradient(135deg, #0A1628, #0F1F3D)', padding: '0 28px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                        <Sk w={44} h={44} r={13} />
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                            <Sk w={220} h={18} r={8} />
-                            <Sk w={160} h={12} r={6} />
+                        <Sk w={38} h={38} r={11} style={{ background: 'rgba(255,255,255,0.15)', animation: 'none' }} />
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+                            <Sk w={200} h={17} r={8} style={{ background: 'rgba(255,255,255,0.15)', animation: 'none' }} />
+                            <Sk w={130} h={11} r={5} style={{ background: 'rgba(255,255,255,0.1)', animation: 'none' }} />
                         </div>
                     </div>
                     <div style={{ display: 'flex', gap: 8 }}>
-                        <Sk w={38} h={38} r={10} />
-                        <Sk w={38} h={38} r={10} />
+                        <Sk w={36} h={36} r={10} style={{ background: 'rgba(255,255,255,0.15)', animation: 'none' }} />
+                        <Sk w={36} h={36} r={10} style={{ background: 'rgba(255,255,255,0.15)', animation: 'none' }} />
                     </div>
                 </div>
-                {/* Body */}
-                <div style={{ padding: '24px 28px', display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 1280, width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
-                    {/* Stats grid */}
-                    <div>
-                        <Sk w={160} h={16} r={8} style={{ marginBottom: 14 }} />
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
-                            {[...Array(4)].map((_, i) => (
-                                <div key={i} style={skBg}>
-                                    <Sk w={38} h={38} r={11} />
-                                    <Sk w={54} h={28} r={8} />
-                                    <Sk w={48} h={11} r={5} />
+                {/* 2-column body */}
+                <div style={{ padding: '20px 24px 40px', flex: 1, display: 'flex', flexDirection: 'column', gap: 16 }}>
+                    <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+                        <div style={{ flex: 3, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 16 }}>
+                            <div style={{ backgroundColor: '#fff', borderRadius: 16, padding: 18, border: '1px solid #E2E8F2', display: 'flex', flexDirection: 'column', gap: 12 }}>
+                                <Sk w={80} h={14} r={7} />
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                                    {[...Array(4)].map((_, i) => (
+                                        <div key={i} style={{ backgroundColor: '#F0F4FA', borderRadius: 12, padding: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                                            <Sk w={32} h={32} r={9} />
+                                            <Sk w={40} h={22} r={7} />
+                                            <Sk w={50} h={10} r={5} />
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
-                        </div>
-                    </div>
-                    {/* Action cards */}
-                    <div>
-                        <Sk w={120} h={16} r={8} style={{ marginBottom: 14 }} />
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-                            {[...Array(2)].map((_, i) => (
-                                <div key={i} style={{ borderRadius: 20, padding: '22px 20px', backgroundColor: C.border, display: 'flex', flexDirection: 'column', gap: 12, minHeight: 148 }}>
-                                    <Sk w={46} h={46} r={13} style={{ background: 'rgba(255,255,255,0.35)', animation: 'none' }} />
-                                    <Sk w="55%" h={18} r={8} style={{ background: 'rgba(255,255,255,0.35)', animation: 'none' }} />
-                                    <Sk w="40%" h={12} r={6} style={{ background: 'rgba(255,255,255,0.25)', animation: 'none' }} />
+                            </div>
+                            <div style={{ backgroundColor: '#fff', borderRadius: 16, padding: 18, border: '1px solid #E2E8F2', display: 'flex', flexDirection: 'column', gap: 12 }}>
+                                <Sk w={150} h={14} r={7} />
+                                <Sk w="100%" h={10} r={5} />
+                                <div style={{ display: 'flex', gap: 10 }}>
+                                    {[...Array(3)].map((_, i) => (
+                                        <div key={i} style={{ flex: 1, backgroundColor: '#F0F4FA', borderRadius: 10, padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: 5 }}>
+                                            <Sk w={30} h={20} r={6} /><Sk w="60%" h={10} r={5} />
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
-                        </div>
-                    </div>
-                    {/* Recent apps */}
-                    <div>
-                        <Sk w={180} h={16} r={8} style={{ marginBottom: 14 }} />
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                            </div>
                             {[...Array(3)].map((_, i) => (
-                                <div key={i} style={{ backgroundColor: C.surface, borderRadius: 12, padding: '12px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: `1px solid ${C.border}` }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1 }}>
-                                        <Sk w={34} h={34} r={9} />
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
-                                            <Sk w={140} h={14} r={7} />
-                                            <Sk w={100} h={11} r={5} />
+                                <div key={i} style={{ backgroundColor: '#fff', borderRadius: 12, padding: '12px 14px', border: '1px solid #E2E8F2', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                        <Sk w={32} h={32} r={8} />
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                                            <Sk w={140} h={13} r={7} /><Sk w={100} h={10} r={5} />
                                         </div>
                                     </div>
-                                    <Sk w={72} h={24} r={12} />
+                                    <Sk w={70} h={24} r={12} />
+                                </div>
+                            ))}
+                        </div>
+                        <div style={{ flex: 2, minWidth: 260, display: 'flex', flexDirection: 'column', gap: 16 }}>
+                            <div style={{ backgroundColor: '#fff', borderRadius: 16, padding: 18, border: '1px solid #E2E8F2', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+                                <Sk w={60} h={60} r={18} /><Sk w={120} h={15} r={7} /><Sk w={90} h={12} r={6} /><Sk w="100%" h={6} r={3} />
+                            </div>
+                            {[...Array(2)].map((_, i) => (
+                                <div key={i} style={{ backgroundColor: '#fff', borderRadius: 16, padding: 18, border: '1px solid #E2E8F2', display: 'flex', flexDirection: 'column', gap: 12 }}>
+                                    <Sk w={100} h={14} r={7} /><Sk w="80%" h={12} r={6} /><Sk w="100%" h={36} r={10} />
                                 </div>
                             ))}
                         </div>
@@ -248,18 +251,20 @@ export default function ClientDashboard() {
                 @keyframes spin   { to { transform: rotate(360deg); } }
                 @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
                 .ds { animation: fadeUp 0.3s ease both; }
-                .qcard:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(15,31,61,0.18); }
-                .qcard { transition: transform 0.15s ease, box-shadow 0.15s ease; }
-                .acard:hover { border-color: ${C.accent}; }
-                .acard { transition: border-color 0.12s ease; }
+                .ds-cols { display: flex; flex-direction: row; gap: 20px; align-items: flex-start; }
+                .ds-left  { flex: 3; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+                .ds-right { flex: 2; min-width: 260px; display: flex; flex-direction: column; gap: 16px; }
+                @media (max-width: 900px) { .ds-cols { flex-direction: column; } .ds-right { min-width: 0; width: 100%; } }
+                .rc:hover { background: #F5F8FF !important; }
+                .rc { transition: background 0.12s ease; }
             `}</style>
 
             <div style={S.root}>
-                {/* ── Sticky page header ── */}
+                {/* ── Dark sticky header ── */}
                 <div style={S.header}>
                     <div style={S.headerLeft}>
                         <div style={S.headerIcon}>
-                            <IoGridOutline size={20} color={C.accent} />
+                            <IoGridOutline size={20} color="rgba(255,255,255,0.9)" />
                         </div>
                         <div>
                             <h1 style={S.headerTitle}>{greeting()}, {user?.first_name || 'User'} 👋</h1>
@@ -271,34 +276,30 @@ export default function ClientDashboard() {
                         </div>
                     </div>
                     <div style={S.headerRight}>
-                        {/* Eligibility badge */}
                         {hasProfile && user?.registration_status === 'Verified' && (
                             <div style={{
-                                ...S.eligBadge,
-                                backgroundColor: isEligible ? C.greenSoft : C.amberSoft,
-                                borderColor: isEligible ? C.green + '60' : C.amber + '60',
+                                display: 'flex', alignItems: 'center',
+                                padding: '5px 10px', borderRadius: 20,
+                                backgroundColor: isEligible ? 'rgba(5,150,105,0.2)' : 'rgba(217,119,6,0.2)',
+                                border: `1px solid ${isEligible ? 'rgba(5,150,105,0.35)' : 'rgba(217,119,6,0.35)'}`,
                             }}>
                                 {isEligible
-                                    ? <IoShieldCheckmarkOutline size={13} color={C.green} />
-                                    : <IoTimeOutline size={13} color={C.amber} />
+                                    ? <IoShieldCheckmarkOutline size={13} color="#34D399" />
+                                    : <IoTimeOutline size={13} color="#FCD34D" />
                                 }
-                                <span style={{ fontSize: 11, fontWeight: '700', color: isEligible ? C.green : C.amber, marginLeft: 5 }}>
+                                <span style={{ fontSize: 11, fontWeight: '700', color: isEligible ? '#34D399' : '#FCD34D', marginLeft: 5 }}>
                                     {isEligible ? 'Eligible' : eligibilityLoading ? 'Checking…' : 'Pending Eligibility'}
                                 </span>
                             </div>
                         )}
-
-                        {/* Notification bell → /notifications */}
                         <button style={S.iconBtn} onClick={() => navigate('/notifications')}>
-                            <IoNotificationsOutline size={20} color={C.navy} />
+                            <IoNotificationsOutline size={20} color="rgba(255,255,255,0.8)" />
                             {unreadCount > 0 && (
                                 <div style={S.iconBtnBadge}>{unreadCount > 9 ? '9+' : unreadCount}</div>
                             )}
                         </button>
-
-                        {/* Refresh */}
                         <button style={S.iconBtn} onClick={onRefresh} disabled={refreshing}>
-                            <IoRefreshOutline size={18} color={C.muted}
+                            <IoRefreshOutline size={18} color="rgba(255,255,255,0.7)"
                                               style={{ animation: refreshing ? 'spin 0.8s linear infinite' : 'none' }} />
                         </button>
                     </div>
@@ -307,7 +308,7 @@ export default function ClientDashboard() {
                 {/* ── Page body ── */}
                 <div style={S.body}>
 
-                    {/* ── Profile completion reminder ── */}
+                    {/* Profile completion banner */}
                     {!hasProfile && (
                         <div className="ds" style={S.profileBanner} onClick={() => navigate('/complete-profile')}>
                             <div style={S.profileBannerLeft}>
@@ -316,162 +317,273 @@ export default function ClientDashboard() {
                                 </div>
                                 <div>
                                     <div style={S.profileBannerTitle}>Complete your profile to get started</div>
-                                    <div style={S.profileBannerSub}>
-                                        Upload your documents and preferences to unlock device applications.
-                                    </div>
+                                    <div style={S.profileBannerSub}>Upload your documents to unlock device applications.</div>
                                 </div>
                             </div>
-                            <div style={S.profileBannerArrow}>
-                                <IoChevronForward size={18} color={C.amber} />
-                            </div>
+                            <IoChevronForward size={18} color={C.amber} />
                         </div>
                     )}
 
-                    {/* ── Application Summary ── */}
-                    <div className="ds" style={{ animationDelay: '40ms' }}>
-                        <div style={S.sectionHeader}>
-                            <h2 style={S.sectionTitle}>Application Summary</h2>
-                        </div>
-                        <div style={S.statsGrid}>
-                            {stats.map((st, i) => {
-                                const Icon = st.icon;
-                                return (
-                                    <div key={i} style={{ ...S.statCard, borderTop: `3px solid ${st.color}` }}>
-                                        <div style={{ ...S.statIco, backgroundColor: st.bg }}>
-                                            <Icon size={18} color={st.color} />
-                                        </div>
-                                        <div style={{ ...S.statVal, color: st.color }}>{st.value}</div>
-                                        <div style={S.statLabel}>{st.label}</div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
+                    {/* ── 2-column layout ── */}
+                    <div className="ds-cols">
 
-                    {/* ── Quick Actions ── */}
-                    <div className="ds" style={{ animationDelay: '80ms' }}>
-                        <div style={S.sectionHeader}>
-                            <h2 style={S.sectionTitle}>Quick Actions</h2>
-                        </div>
-                        <div style={S.actionsRow}>
-                            {/* Browse Devices → navigates to /device-catalog */}
-                            <button
-                                className="qcard"
-                                style={{
-                                    ...S.actionCard, ...S.actionNavy,
-                                    ...(!hasProfile || !isEligible ? S.actionDisabled : {}),
-                                }}
-                                onClick={() => {
-                                    if (!hasProfile) {
-                                        navigate('/complete-profile');
-                                    } else if (!isEligible) {
-                                        toast.warning('Not Eligible', 'Your account is not yet eligible for device applications.');
-                                    } else {
-                                        navigate('/device-catalog');
-                                    }
-                                }}
-                            >
-                                <div style={{ ...S.actionIco, backgroundColor: 'rgba(255,255,255,0.14)' }}>
-                                    <IoPhonePortraitOutline size={24} color="#fff" />
+                        {/* LEFT */}
+                        <div className="ds-left">
+
+                            {/* Stats overview */}
+                            <div className="ds" style={S.card}>
+                                <div style={S.cardHeader}>
+                                    <span style={S.cardTitle}>Overview</span>
                                 </div>
-                                <div style={S.actionTitle}>Browse Devices</div>
-                                <div style={S.actionHint}>
-                                    {!hasProfile ? 'Complete profile first' : !isEligible ? 'Pending eligibility' : 'View available devices'}
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                                    {stats.map((st, i) => {
+                                        const Icon = st.icon;
+                                        return (
+                                            <div key={i} style={{ ...S.statTile, borderTop: `3px solid ${st.color}` }}>
+                                                <div style={{ ...S.statIco, backgroundColor: st.bg }}>
+                                                    <Icon size={16} color={st.color} />
+                                                </div>
+                                                <div style={{ ...S.statVal, color: st.color }}>{st.value}</div>
+                                                <div style={S.statLabel}>{st.label}</div>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
-                                <IoArrowForward size={16} color="rgba(255,255,255,0.5)" style={{ marginTop: 12 }} />
-
-                                {!hasProfile && (
-                                    <div style={S.actionLockBadge}>Profile needed</div>
-                                )}
-                            </button>
-
-                            {/* My Applications → navigates to /my-applications */}
-                            <button
-                                className="qcard"
-                                style={{
-                                    ...S.actionCard, ...S.actionGreen,
-                                    ...(!hasProfile ? S.actionDisabled : {}),
-                                }}
-                                onClick={() => {
-                                    if (!hasProfile) navigate('/complete-profile');
-                                    else navigate('/my-applications');
-                                }}
-                            >
-                                <div style={{ ...S.actionIco, backgroundColor: 'rgba(255,255,255,0.14)' }}>
-                                    <IoListOutline size={24} color="#fff" />
-                                </div>
-                                <div style={S.actionTitle}>My Applications</div>
-                                <div style={S.actionHint}>
-                                    {applications.length > 0 ? `${applications.length} application${applications.length !== 1 ? 's' : ''}` : 'No applications yet'}
-                                </div>
-                                <IoArrowForward size={16} color="rgba(255,255,255,0.5)" style={{ marginTop: 12 }} />
-
-                                {applications.length > 0 && (
-                                    <div style={S.actionCountBadge}>{applications.length}</div>
-                                )}
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* ── Recent Applications ── */}
-                    {applications.length > 0 && (
-                        <div className="ds" style={{ animationDelay: '120ms' }}>
-                            <div style={S.sectionHeader}>
-                                <h2 style={S.sectionTitle}>Recent Applications</h2>
-                                <button style={S.seeAll} onClick={() => navigate('/my-applications')}>
-                                    See all <IoChevronForward size={13} color={C.accent} style={{ marginLeft: 2 }} />
-                                </button>
                             </div>
 
-                            <div style={S.recentList}>
-                                {applications.slice(0, 4).map(app => (
-                                    <button
-                                        key={app.application_id}
-                                        className="acard"
-                                        style={S.recentCard}
-                                        onClick={() => navigate(`/application-details/${app.application_id}`)}
-                                    >
-                                        <div style={S.recentLeft}>
-                                            <div style={S.recentIco}>
-                                                <IoPhonePortraitOutline size={16} color={C.accent} />
-                                            </div>
-                                            <div style={{ flex: 1, minWidth: 0 }}>
-                                                <div style={S.recentDevice}>{app.device_name}</div>
-                                                <div style={S.recentMeta}>
-                                                    {app.model} · {new Date(app.submission_date).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' })}
+                            {/* Application pipeline */}
+                            {summary?.total_applications > 0 && (
+                                <div className="ds" style={{ ...S.card, animationDelay: '40ms' }}>
+                                    <div style={S.cardHeader}>
+                                        <span style={S.cardTitle}>Application Pipeline</span>
+                                        <span style={S.cardSub}>{summary.total_applications} total</span>
+                                    </div>
+                                    <div style={{ height: 10, borderRadius: 6, backgroundColor: C.border, overflow: 'hidden', display: 'flex', marginBottom: 14 }}>
+                                        {summary.approved > 0 && (
+                                            <div style={{ width: `${summary.approved / summary.total_applications * 100}%`, backgroundColor: C.green }} />
+                                        )}
+                                        {summary.pending > 0 && (
+                                            <div style={{ width: `${summary.pending / summary.total_applications * 100}%`, backgroundColor: C.amber }} />
+                                        )}
+                                        {summary.rejected > 0 && (
+                                            <div style={{ width: `${summary.rejected / summary.total_applications * 100}%`, backgroundColor: C.rose }} />
+                                        )}
+                                    </div>
+                                    <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                                        {[
+                                            { label: 'Approved', count: summary.approved, color: C.green, bg: C.greenSoft },
+                                            { label: 'Pending',  count: summary.pending,  color: C.amber, bg: C.amberSoft },
+                                            { label: 'Rejected', count: summary.rejected, color: C.rose,  bg: C.roseSoft },
+                                        ].map(item => (
+                                            <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 80, padding: '8px 12px', backgroundColor: item.bg, borderRadius: 10 }}>
+                                                <div style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: item.color, flexShrink: 0 }} />
+                                                <div>
+                                                    <div style={{ fontSize: 20, fontWeight: '900', color: item.color, lineHeight: 1 }}>{item.count}</div>
+                                                    <div style={{ fontSize: 10, color: item.color, fontWeight: '600', opacity: 0.8 }}>{item.label}</div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                            <StatusChip status={app.application_status} />
-                                            <IoChevronForward size={14} color={C.mutedLight} />
-                                        </div>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Empty state when no applications yet */}
-                    {applications.length === 0 && hasProfile && isEligible && (
-                        <div className="ds" style={{ animationDelay: '120ms' }}>
-                            <div style={S.emptyBox}>
-                                <div style={S.emptyIco}>
-                                    <IoDocumentTextOutline size={28} color={C.mutedLight} />
+                                        ))}
+                                    </div>
                                 </div>
-                                <div style={S.emptyTitle}>No applications yet</div>
-                                <div style={S.emptySub}>Browse available devices and submit your first application.</div>
-                                <button style={S.emptyBtn} onClick={() => navigate('/device-catalog')}>
-                                    Browse Devices
-                                </button>
-                            </div>
-                        </div>
-                    )}
+                            )}
 
+                            {/* Recent applications */}
+                            {applications.length > 0 && (
+                                <div className="ds" style={{ ...S.card, animationDelay: '80ms', padding: '18px 0' }}>
+                                    <div style={{ ...S.cardHeader, padding: '0 18px 0' }}>
+                                        <span style={S.cardTitle}>Recent Applications</span>
+                                        <button style={S.seeAll} onClick={() => navigate('/my-applications')}>
+                                            See all <IoChevronForward size={12} color={C.accent} style={{ marginLeft: 2 }} />
+                                        </button>
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                        {applications.slice(0, 4).map((app, i) => (
+                                            <button
+                                                key={app.application_id}
+                                                className="rc"
+                                                style={{ ...S.recentCard, borderTop: i === 0 ? `1px solid ${C.border}` : 'none' }}
+                                                onClick={() => navigate(`/application-details/${app.application_id}`)}
+                                            >
+                                                <div style={S.recentLeft}>
+                                                    <div style={S.recentIco}>
+                                                        <IoPhonePortraitOutline size={15} color={C.accent} />
+                                                    </div>
+                                                    <div style={{ flex: 1, minWidth: 0 }}>
+                                                        <div style={S.recentDevice}>{app.device_name}</div>
+                                                        <div style={S.recentMeta}>
+                                                            {app.model} · {new Date(app.submission_date).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                                    <StatusChip status={app.application_status} />
+                                                    <IoChevronForward size={13} color={C.mutedLight} />
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Empty state */}
+                            {applications.length === 0 && hasProfile && isEligible && (
+                                <div className="ds" style={{ ...S.card, animationDelay: '80ms' }}>
+                                    <div style={{ padding: '32px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                        <div style={S.emptyIco}>
+                                            <IoDocumentTextOutline size={26} color={C.mutedLight} />
+                                        </div>
+                                        <div style={S.emptyTitle}>No applications yet</div>
+                                        <div style={S.emptySub}>Browse available devices and submit your first application.</div>
+                                        <button style={S.emptyBtn} onClick={() => navigate('/device-catalog')}>Browse Devices</button>
+                                    </div>
+                                </div>
+                            )}
+
+                        </div>
+
+                        {/* RIGHT */}
+                        <div className="ds-right">
+
+                            {/* Profile card */}
+                            <div className="ds" style={S.card}>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingBottom: 16 }}>
+                                    <div style={S.avatarWrap}>
+                                        <span style={S.avatarText}>{(user?.first_name?.[0] || '?').toUpperCase()}</span>
+                                    </div>
+                                    <div style={{ fontSize: 15, fontWeight: '800', color: C.text, marginBottom: 2 }}>
+                                        {user?.first_name} {user?.last_name}
+                                    </div>
+                                    <div style={{ fontSize: 12, color: C.muted, marginBottom: 12 }}>{user?.email}</div>
+                                    <div style={{
+                                        padding: '4px 12px', borderRadius: 20,
+                                        backgroundColor: user?.registration_status === 'Verified' ? C.greenSoft : C.amberSoft,
+                                    }}>
+                                        <span style={{ fontSize: 11, fontWeight: '700', color: user?.registration_status === 'Verified' ? C.green : C.amber }}>
+                                            {user?.registration_status || 'Pending'}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: 14 }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                                        <span style={{ fontSize: 12, fontWeight: '600', color: C.muted }}>Profile Completion</span>
+                                        <span style={{ fontSize: 13, fontWeight: '800', color: C.accent }}>
+                                            {!hasProfile ? '40%' : user?.registration_status === 'Verified' ? '100%' : '75%'}
+                                        </span>
+                                    </div>
+                                    <div style={{ height: 6, backgroundColor: C.border, borderRadius: 3, overflow: 'hidden' }}>
+                                        <div style={{
+                                            height: '100%', borderRadius: 3,
+                                            width: !hasProfile ? '40%' : user?.registration_status === 'Verified' ? '100%' : '75%',
+                                            background: 'linear-gradient(90deg, #1E4FD8, #3B82F6)',
+                                            transition: 'width 0.8s ease',
+                                        }} />
+                                    </div>
+                                    {!hasProfile && (
+                                        <button
+                                            style={{ width: '100%', marginTop: 12, backgroundColor: C.accentSoft, padding: 9, borderRadius: 10, border: 'none', fontSize: 13, fontWeight: '700', color: C.accent, cursor: 'pointer' }}
+                                            onClick={() => navigate('/complete-profile')}
+                                        >
+                                            Complete Profile →
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Eligibility card */}
+                            <div className="ds" style={{ ...S.card, animationDelay: '40ms' }}>
+                                <div style={S.cardHeader}>
+                                    <span style={S.cardTitle}>Eligibility Status</span>
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                    <div style={{
+                                        width: 56, height: 56, borderRadius: 16, marginBottom: 10,
+                                        backgroundColor: isEligible ? C.greenSoft : C.amberSoft,
+                                        display: 'flex', justifyContent: 'center', alignItems: 'center',
+                                    }}>
+                                        {isEligible
+                                            ? <IoShieldCheckmarkOutline size={26} color={C.green} />
+                                            : <IoTimeOutline size={26} color={C.amber} />
+                                        }
+                                    </div>
+                                    <div style={{ fontSize: 14, fontWeight: '800', color: isEligible ? C.green : C.amber, marginBottom: 4 }}>
+                                        {isEligible ? 'Eligible to Apply' : eligibilityLoading ? 'Checking…' : 'Not Yet Eligible'}
+                                    </div>
+                                    <div style={{ fontSize: 12, color: C.muted, textAlign: 'center', lineHeight: 1.5, marginBottom: 12 }}>
+                                        {isEligible
+                                            ? 'You can browse and apply for devices.'
+                                            : hasProfile ? 'Your account is pending verification.' : 'Complete your profile to become eligible.'}
+                                    </div>
+                                    {isEligible && (
+                                        <button
+                                            style={{ backgroundColor: C.navy, padding: '9px 18px', borderRadius: 10, border: 'none', color: '#fff', fontWeight: '700', fontSize: 13, cursor: 'pointer', width: '100%' }}
+                                            onClick={() => navigate('/device-catalog')}
+                                        >
+                                            Browse Devices
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Quick actions */}
+                            <div className="ds" style={{ ...S.card, animationDelay: '80ms' }}>
+                                <div style={S.cardHeader}>
+                                    <span style={S.cardTitle}>Quick Actions</span>
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                                    <button
+                                        style={{
+                                            ...S.actionBtn,
+                                            background: 'linear-gradient(135deg, #0F1F3D 0%, #1E3A5F 100%)',
+                                            ...(!hasProfile || !isEligible ? { opacity: 0.55 } : {}),
+                                        }}
+                                        onClick={() => {
+                                            if (!hasProfile) navigate('/complete-profile');
+                                            else if (!isEligible) toast.warning('Not Eligible', 'Your account is not yet eligible.');
+                                            else navigate('/device-catalog');
+                                        }}
+                                    >
+                                        <div style={{ ...S.actionBtnIco, backgroundColor: 'rgba(255,255,255,0.15)' }}>
+                                            <IoPhonePortraitOutline size={18} color="#fff" />
+                                        </div>
+                                        <div style={{ flex: 1, textAlign: 'left' }}>
+                                            <div style={S.actionBtnLabel}>Browse Devices</div>
+                                            <div style={S.actionBtnHint}>{!hasProfile ? 'Profile needed' : !isEligible ? 'Pending eligibility' : 'View catalogue'}</div>
+                                        </div>
+                                        <IoArrowForward size={14} color="rgba(255,255,255,0.45)" />
+                                    </button>
+                                    <button
+                                        style={{
+                                            ...S.actionBtn,
+                                            background: 'linear-gradient(135deg, #047857 0%, #059669 100%)',
+                                            ...(!hasProfile ? { opacity: 0.55 } : {}),
+                                        }}
+                                        onClick={() => {
+                                            if (!hasProfile) navigate('/complete-profile');
+                                            else navigate('/my-applications');
+                                        }}
+                                    >
+                                        <div style={{ ...S.actionBtnIco, backgroundColor: 'rgba(255,255,255,0.15)' }}>
+                                            <IoListOutline size={18} color="#fff" />
+                                        </div>
+                                        <div style={{ flex: 1, textAlign: 'left' }}>
+                                            <div style={S.actionBtnLabel}>My Applications</div>
+                                            <div style={S.actionBtnHint}>
+                                                {applications.length > 0 ? `${applications.length} application${applications.length !== 1 ? 's' : ''}` : 'No applications yet'}
+                                            </div>
+                                        </div>
+                                        {applications.length > 0 && (
+                                            <div style={S.actionCountBadge}>{applications.length}</div>
+                                        )}
+                                        <IoArrowForward size={14} color="rgba(255,255,255,0.45)" />
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {/* Confirmation dialog */}
             <ConfirmDialog config={dialog} onClose={() => setDialog(null)} />
         </>
     );
@@ -479,32 +591,26 @@ export default function ClientDashboard() {
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
 const S = {
-    root: { backgroundColor: C.bg, display: 'flex', flexDirection: 'column', minHeight: '100%' },
+    root: { backgroundColor: '#F0F4FA', display: 'flex', flexDirection: 'column', minHeight: '100%' },
 
     header: {
-        backgroundColor: C.surface,
-        borderBottom: `1px solid ${C.border}`,
-        padding: '18px 28px',
+        background: 'linear-gradient(135deg, #0A1628 0%, #0F1F3D 100%)',
+        padding: '0 28px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16,
-        flexWrap: 'wrap',
+        minHeight: 64, flexWrap: 'wrap',
         position: 'sticky', top: 0, zIndex: 50,
-        boxShadow: '0 1px 4px rgba(15,31,61,0.06)',
+        boxShadow: '0 2px 16px rgba(10,22,40,0.4)',
     },
     headerLeft:  { display: 'flex', alignItems: 'center', gap: 14, flex: 1, minWidth: 0 },
-    headerIcon:  { width: 44, height: 44, borderRadius: 13, background: 'linear-gradient(135deg, #EBF0FF 0%, #D4E0FF 100%)', display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 },
-    headerTitle: { fontSize: 20, fontWeight: '800', color: C.text, margin: 0, letterSpacing: '-0.2px' },
-    headerSub:   { fontSize: 12, color: C.muted, marginTop: 2 },
+    headerIcon:  { width: 38, height: 38, borderRadius: 11, backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.14)', display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 },
+    headerTitle: { fontSize: 17, fontWeight: '800', color: '#fff', margin: 0, letterSpacing: '-0.2px' },
+    headerSub:   { fontSize: 11, color: 'rgba(255,255,255,0.5)', marginTop: 1 },
     headerRight: { display: 'flex', alignItems: 'center', gap: 8 },
 
-    eligBadge: {
-        display: 'flex', alignItems: 'center',
-        padding: '5px 10px', borderRadius: 20,
-        border: '1px solid',
-    },
-
     iconBtn: {
-        width: 38, height: 38, borderRadius: 10,
-        backgroundColor: C.bg, border: `1px solid ${C.border}`,
+        width: 36, height: 36, borderRadius: 10,
+        backgroundColor: 'rgba(255,255,255,0.1)',
+        border: '1px solid rgba(255,255,255,0.18)',
         display: 'flex', justifyContent: 'center', alignItems: 'center',
         cursor: 'pointer', position: 'relative',
     },
@@ -514,79 +620,57 @@ const S = {
         backgroundColor: '#EF4444',
         fontSize: 9, fontWeight: '800', color: '#fff',
         display: 'flex', justifyContent: 'center', alignItems: 'center',
-        padding: '0 3px', border: `2px solid ${C.surface}`,
+        padding: '0 3px', border: '2px solid #0F1F3D',
     },
 
-    body: { flex: 1, padding: '24px 28px', display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 1280, width: '100%', alignSelf: 'center', boxSizing: 'border-box' },
+    body: { flex: 1, padding: '20px 24px 40px', display: 'flex', flexDirection: 'column', gap: 16 },
 
     profileBanner: {
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         backgroundColor: '#FFFBEB', border: '1px solid #FDE68A',
-        borderRadius: 14, padding: '14px 16px', cursor: 'pointer', width: '100%',
-        gap: 12,
+        borderRadius: 14, padding: '14px 16px', cursor: 'pointer', gap: 12,
     },
     profileBannerLeft:  { display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0 },
-    profileBannerIco:   { width: 42, height: 42, borderRadius: 11, backgroundColor: '#FEF3C7', display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 },
-    profileBannerTitle: { fontSize: 14, fontWeight: '700', color: '#92400E', marginBottom: 3 },
-    profileBannerSub:   { fontSize: 12, color: '#B45309', lineHeight: 1.5 },
-    profileBannerArrow: { flexShrink: 0 },
+    profileBannerIco:   { width: 40, height: 40, borderRadius: 11, backgroundColor: '#FEF3C7', display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 },
+    profileBannerTitle: { fontSize: 14, fontWeight: '700', color: '#92400E', marginBottom: 2 },
+    profileBannerSub:   { fontSize: 12, color: '#B45309', lineHeight: 1.4 },
 
-    sectionHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 },
-    sectionTitle:  { fontSize: 15, fontWeight: '800', color: C.text, margin: 0, letterSpacing: '-0.1px' },
-    seeAll: {
-        display: 'flex', alignItems: 'center',
-        fontSize: 13, color: C.accent, fontWeight: '600',
-        background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-    },
+    card:       { backgroundColor: C.surface, borderRadius: 16, padding: 18, border: `1px solid ${C.border}`, boxShadow: '0 2px 8px rgba(15,31,61,0.05)' },
+    cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 },
+    cardTitle:  { fontSize: 14, fontWeight: '800', color: C.text, letterSpacing: '-0.1px' },
+    cardSub:    { fontSize: 12, color: C.muted },
+    seeAll:     { display: 'flex', alignItems: 'center', fontSize: 12, color: C.accent, fontWeight: '600', background: 'none', border: 'none', cursor: 'pointer', padding: 0 },
 
-    statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 },
-    statCard:  { backgroundColor: C.surface, borderRadius: 16, padding: '18px 16px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', border: `1px solid ${C.border}`, boxShadow: '0 2px 8px rgba(15,31,61,0.05)', overflow: 'hidden', position: 'relative' },
-    statIco:   { width: 38, height: 38, borderRadius: 11, display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 12 },
-    statVal:   { fontSize: 30, fontWeight: '900', color: C.text, lineHeight: 1, letterSpacing: '-0.5px' },
-    statLabel: { fontSize: 11, color: C.muted, fontWeight: '600', marginTop: 5, letterSpacing: '0.2px' },
+    statTile:  { backgroundColor: C.bg, borderRadius: 12, padding: '14px 12px', display: 'flex', flexDirection: 'column', overflow: 'hidden' },
+    statIco:   { width: 32, height: 32, borderRadius: 9, display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 10 },
+    statVal:   { fontSize: 28, fontWeight: '900', lineHeight: 1, letterSpacing: '-0.5px', marginBottom: 4 },
+    statLabel: { fontSize: 10, color: C.muted, fontWeight: '600', letterSpacing: '0.3px' },
 
-    actionsRow: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 },
-    actionCard: {
-        borderRadius: 20, padding: '22px 20px',
-        position: 'relative', cursor: 'pointer',
-        border: 'none', textAlign: 'left',
-        display: 'flex', flexDirection: 'column',
-    },
-    actionNavy: { background: 'linear-gradient(135deg, #0F1F3D 0%, #1E3A5F 100%)' },
-    actionGreen:{ background: 'linear-gradient(135deg, #047857 0%, #059669 100%)' },
-    actionDisabled: { opacity: 0.5, cursor: 'not-allowed' },
-    actionIco:  { width: 46, height: 46, borderRadius: 13, display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 14 },
-    actionTitle:{ fontSize: 16, fontWeight: '800', color: '#fff', lineHeight: 1.3 },
-    actionHint: { fontSize: 11, color: 'rgba(255,255,255,0.6)', marginTop: 5 },
-    actionLockBadge: {
-        position: 'absolute', top: 12, right: 12,
-        backgroundColor: 'rgba(0,0,0,0.25)',
-        padding: '3px 8px', borderRadius: 10,
-        fontSize: 10, fontWeight: '700', color: '#fff',
-    },
-    actionCountBadge: {
-        position: 'absolute', top: 12, right: 12,
-        minWidth: 22, height: 22, borderRadius: 11,
-        backgroundColor: '#EF4444',
-        display: 'flex', justifyContent: 'center', alignItems: 'center',
-        fontSize: 11, fontWeight: '800', color: '#fff',
-        padding: '0 5px',
-    },
-
-    recentList: { display: 'flex', flexDirection: 'column', gap: 8 },
     recentCard: {
-        backgroundColor: C.surface, borderRadius: 12, padding: '12px 14px',
+        backgroundColor: C.surface, padding: '11px 18px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        border: `1px solid ${C.border}`, cursor: 'pointer', width: '100%', textAlign: 'left',
+        borderBottom: `1px solid ${C.border}`, cursor: 'pointer', width: '100%', textAlign: 'left',
+        border: 'none',
     },
     recentLeft:  { display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0, marginRight: 12 },
-    recentIco:   { width: 34, height: 34, borderRadius: 9, backgroundColor: C.accentSoft, display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 },
-    recentDevice:{ fontSize: 14, fontWeight: '700', color: C.text, marginBottom: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+    recentIco:   { width: 32, height: 32, borderRadius: 8, backgroundColor: C.accentSoft, display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 },
+    recentDevice:{ fontSize: 13, fontWeight: '700', color: C.text, marginBottom: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
     recentMeta:  { fontSize: 11, color: C.muted },
 
-    emptyBox:  { backgroundColor: C.surface, borderRadius: 16, padding: '48px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', border: `1px solid ${C.border}` },
-    emptyIco:  { width: 60, height: 60, borderRadius: 16, backgroundColor: C.bg, border: `1px solid ${C.border}`, display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 16 },
-    emptyTitle:{ fontSize: 16, fontWeight: '800', color: C.text, marginBottom: 6 },
-    emptySub:  { fontSize: 13, color: C.muted, textAlign: 'center', lineHeight: 1.6, marginBottom: 18 },
-    emptyBtn:  { backgroundColor: C.navy, padding: '11px 22px', borderRadius: 11, border: 'none', color: '#fff', fontWeight: '700', fontSize: 13, cursor: 'pointer' },
+    avatarWrap:  { width: 58, height: 58, borderRadius: 18, background: 'linear-gradient(135deg, #1E4FD8, #3B82F6)', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 10 },
+    avatarText:  { fontSize: 22, fontWeight: '900', color: '#fff' },
+
+    actionBtn: {
+        width: '100%', padding: '12px 14px', borderRadius: 12, border: 'none',
+        display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
+    },
+    actionBtnIco:    { width: 36, height: 36, borderRadius: 10, display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 },
+    actionBtnLabel:  { fontSize: 13, fontWeight: '700', color: '#fff', marginBottom: 2 },
+    actionBtnHint:   { fontSize: 11, color: 'rgba(255,255,255,0.6)' },
+    actionCountBadge:{ minWidth: 20, height: 20, borderRadius: 10, backgroundColor: 'rgba(255,255,255,0.25)', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: 11, fontWeight: '800', color: '#fff', padding: '0 5px' },
+
+    emptyIco:  { width: 52, height: 52, borderRadius: 14, backgroundColor: C.bg, border: `1px solid ${C.border}`, display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 12 },
+    emptyTitle:{ fontSize: 14, fontWeight: '800', color: C.text, marginBottom: 4 },
+    emptySub:  { fontSize: 12, color: C.muted, textAlign: 'center', lineHeight: 1.55, marginBottom: 14 },
+    emptyBtn:  { backgroundColor: C.navy, padding: '9px 20px', borderRadius: 10, border: 'none', color: '#fff', fontWeight: '700', fontSize: 13, cursor: 'pointer' },
 };

@@ -213,16 +213,16 @@ export default function ApplicationDetailsScreen() {
     // ── Loading skeleton ──────────────────────────────────────────────────
     if (loading) {
         return (
-            <div style={{ backgroundColor: C.bg, minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ backgroundColor: '#F0F4FA', minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
                 <SkeletonShimmerStyle />
                 {/* Header */}
-                <div style={{ backgroundColor: C.surface, borderBottom: `1px solid ${C.border}`, padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 1px 4px rgba(15,31,61,0.06)' }}>
-                    <Sk w={40} h={40} r={11} />
+                <div style={{ background: 'linear-gradient(135deg, #0A1628, #0F1F3D)', padding: '0 24px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <Sk w={36} h={36} r={10} style={{ background: 'rgba(255,255,255,0.15)', animation: 'none' }} />
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 7 }}>
-                        <Sk w={170} h={17} r={8} />
-                        <Sk w={110} h={12} r={6} />
+                        <Sk w={170} h={17} r={8} style={{ background: 'rgba(255,255,255,0.15)', animation: 'none' }} />
+                        <Sk w={110} h={11} r={5} style={{ background: 'rgba(255,255,255,0.1)', animation: 'none' }} />
                     </div>
-                    <div style={{ width: 40 }} />
+                    <div style={{ width: 36 }} />
                 </div>
                 {/* Body */}
                 <div style={{ padding: '20px 28px 40px', display: 'flex', flexDirection: 'column', gap: 20, maxWidth: 820, width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
@@ -385,7 +385,7 @@ export default function ApplicationDetailsScreen() {
                 {/* ── Sticky page header ── */}
                 <div style={S.header}>
                     <button style={S.backBtn} onClick={() => navigate(-1)}>
-                        <IoArrowBack size={20} color={C.navy} />
+                        <IoArrowBack size={20} color="#fff" />
                     </button>
                     <div style={S.headerCenter}>
                         <h1 style={S.headerTitle}>Application #{application.application_id}</h1>
@@ -578,25 +578,25 @@ export default function ApplicationDetailsScreen() {
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
 const S = {
-    root:   { backgroundColor: C.bg, display: 'flex', flexDirection: 'column', minHeight: '100%' },
+    root:   { backgroundColor: '#F0F4FA', display: 'flex', flexDirection: 'column', minHeight: '100%' },
 
     header: {
-        backgroundColor: C.surface,
-        borderBottom: `1px solid ${C.border}`,
-        padding: '16px 24px',
+        background: 'linear-gradient(135deg, #0A1628 0%, #0F1F3D 100%)',
+        padding: '0 24px',
+        minHeight: 64,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         position: 'sticky', top: 0, zIndex: 50,
-        boxShadow: '0 1px 4px rgba(15,31,61,0.06)',
+        boxShadow: '0 2px 16px rgba(10,22,40,0.4)',
     },
     backBtn: {
-        width: 40, height: 40, borderRadius: 11,
-        backgroundColor: C.bg, border: `1px solid ${C.border}`,
+        width: 36, height: 36, borderRadius: 10,
+        backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)',
         display: 'flex', justifyContent: 'center', alignItems: 'center',
-        cursor: 'pointer', transition: 'background 0.15s ease',
+        cursor: 'pointer',
     },
     headerCenter: { textAlign: 'center' },
-    headerTitle:  { fontSize: 17, fontWeight: '800', color: C.text, margin: 0, letterSpacing: '-0.2px' },
-    headerSub:    { fontSize: 11, color: C.muted, marginTop: 2 },
+    headerTitle:  { fontSize: 17, fontWeight: '800', color: '#fff', margin: 0, letterSpacing: '-0.2px' },
+    headerSub:    { fontSize: 11, color: 'rgba(255,255,255,0.5)', marginTop: 2 },
 
     body: { flex: 1, padding: '20px 28px 40px', display: 'flex', flexDirection: 'column', gap: 20, maxWidth: 820, width: '100%', alignSelf: 'center', boxSizing: 'border-box' },
 

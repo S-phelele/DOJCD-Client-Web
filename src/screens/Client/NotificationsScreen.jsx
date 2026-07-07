@@ -189,18 +189,18 @@ export default function NotificationsScreen() {
 
     if (loading) {
         return (
-            <div style={{ backgroundColor: C.bg, minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ backgroundColor: '#F0F4FA', minHeight: '100%', display: 'flex', flexDirection: 'column' }}>
                 <SkeletonShimmerStyle />
                 {/* Header */}
-                <div style={{ backgroundColor: C.surface, borderBottom: `1px solid ${C.border}`, padding: '18px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 1px 4px rgba(15,31,61,0.06)' }}>
+                <div style={{ background: 'linear-gradient(135deg, #0A1628, #0F1F3D)', padding: '0 28px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                        <Sk w={44} h={44} r={13} />
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                            <Sk w={148} h={18} r={8} />
-                            <Sk w={96} h={12} r={6} />
+                        <Sk w={38} h={38} r={11} style={{ background: 'rgba(255,255,255,0.15)', animation: 'none' }} />
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+                            <Sk w={148} h={17} r={8} style={{ background: 'rgba(255,255,255,0.15)', animation: 'none' }} />
+                            <Sk w={96} h={11} r={5} style={{ background: 'rgba(255,255,255,0.1)', animation: 'none' }} />
                         </div>
                     </div>
-                    <Sk w={38} h={38} r={10} />
+                    <Sk w={36} h={36} r={10} style={{ background: 'rgba(255,255,255,0.15)', animation: 'none' }} />
                 </div>
                 {/* Notification items */}
                 <div style={{ padding: '18px 28px 40px', maxWidth: 900, width: '100%', alignSelf: 'center', boxSizing: 'border-box' }}>
@@ -236,7 +236,7 @@ export default function NotificationsScreen() {
                 <div style={S.header}>
                     <div style={S.headerLeft}>
                         <div style={S.headerIcon}>
-                            <IoNotificationsOutline size={20} color={C.accent} />
+                            <IoNotificationsOutline size={20} color="rgba(255,255,255,0.9)" />
                         </div>
                         <div>
                             <h1 style={S.headerTitle}>Notifications</h1>
@@ -248,12 +248,12 @@ export default function NotificationsScreen() {
                     <div style={S.headerRight}>
                         {unread > 0 && (
                             <button style={S.markAllBtn} onClick={handleMarkAllRead}>
-                                <IoCheckmarkDoneOutline size={15} color={C.accent} />
+                                <IoCheckmarkDoneOutline size={15} color="#fff" />
                                 <span style={S.markAllText}>Mark all read</span>
                             </button>
                         )}
                         <button style={S.iconBtn} onClick={onRefresh} disabled={refreshing}>
-                            <IoRefreshOutline size={18} color={C.muted}
+                            <IoRefreshOutline size={18} color="rgba(255,255,255,0.7)"
                                               style={{ animation: refreshing ? 'spin 0.8s linear infinite' : 'none' }} />
                         </button>
                     </div>
@@ -335,25 +335,25 @@ export default function NotificationsScreen() {
 }
 
 const S = {
-    root: { backgroundColor: C.bg, display: 'flex', flexDirection: 'column', minHeight: '100%' },
+    root: { backgroundColor: '#F0F4FA', display: 'flex', flexDirection: 'column', minHeight: '100%' },
 
     header: {
-        backgroundColor: C.surface,
-        borderBottom: `1px solid ${C.border}`,
-        padding: '18px 28px',
+        background: 'linear-gradient(135deg, #0A1628 0%, #0F1F3D 100%)',
+        padding: '0 28px',
+        minHeight: 64,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16,
         position: 'sticky', top: 0, zIndex: 50, flexWrap: 'wrap',
-        boxShadow: '0 1px 4px rgba(15,31,61,0.06)',
+        boxShadow: '0 2px 16px rgba(10,22,40,0.4)',
     },
     headerLeft:  { display: 'flex', alignItems: 'center', gap: 14 },
-    headerIcon:  { width: 44, height: 44, borderRadius: 13, background: 'linear-gradient(135deg, #EBF0FF 0%, #D4E0FF 100%)', display: 'flex', justifyContent: 'center', alignItems: 'center' },
-    headerTitle: { fontSize: 20, fontWeight: '800', color: C.text, margin: 0, letterSpacing: '-0.2px' },
-    headerSub:   { fontSize: 12, color: C.muted, marginTop: 2 },
+    headerIcon:  { width: 38, height: 38, borderRadius: 11, backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.14)', display: 'flex', justifyContent: 'center', alignItems: 'center' },
+    headerTitle: { fontSize: 17, fontWeight: '800', color: '#fff', margin: 0, letterSpacing: '-0.2px' },
+    headerSub:   { fontSize: 11, color: 'rgba(255,255,255,0.5)', marginTop: 1 },
     headerRight: { display: 'flex', alignItems: 'center', gap: 10 },
 
-    markAllBtn:  { display: 'flex', alignItems: 'center', gap: 6, backgroundColor: C.accentSoft, padding: '8px 16px', borderRadius: 22, border: 'none', cursor: 'pointer', boxShadow: '0 1px 4px rgba(30,79,216,0.12)' },
-    markAllText: { fontSize: 13, color: C.accent, fontWeight: '700' },
-    iconBtn:     { width: 38, height: 38, borderRadius: 10, backgroundColor: C.bg, border: `1px solid ${C.border}`, display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer' },
+    markAllBtn:  { display: 'flex', alignItems: 'center', gap: 6, backgroundColor: 'rgba(255,255,255,0.1)', padding: '7px 14px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.18)', cursor: 'pointer' },
+    markAllText: { fontSize: 13, color: '#fff', fontWeight: '600' },
+    iconBtn:     { width: 36, height: 36, borderRadius: 10, backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)', display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer' },
 
     body: { flex: 1, padding: '18px 28px 40px', maxWidth: 900, width: '100%', alignSelf: 'center', boxSizing: 'border-box' },
 
