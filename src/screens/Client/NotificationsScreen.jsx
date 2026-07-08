@@ -54,6 +54,19 @@ function formatTime(d) {
     return new Date(d).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+function getNotifMeta(title = '') {
+    const t = title.toLowerCase();
+    if (t.includes('fully approved') || t.includes('approved'))
+        return { color: '#059669', bg: '#D1FAE5', Icon: IoCheckmarkCircleOutline };
+    if (t.includes('rejected') || t.includes('cancelled'))
+        return { color: '#DC2626', bg: '#FEE2E2', Icon: IoAlertCircleOutline };
+    if (t.includes('finance') || t.includes('order') || t.includes('placed'))
+        return { color: '#D97706', bg: '#FEF3C7', Icon: IoCheckmarkDoneOutline };
+    if (t.includes('submitted') || t.includes('pending'))
+        return { color: '#1E4FD8', bg: '#EBF0FF', Icon: IoInformationCircleOutline };
+    return { color: '#1E4FD8', bg: '#EBF0FF', Icon: IoNotificationsOutline };
+}
+
 // Notification popup — shown when an unread notification is clicked
 function NotificationPopup({ notif, onClose }) {
     // Hook must be called before any early return
@@ -227,8 +240,8 @@ export default function NotificationsScreen() {
             <style>{`
                 @keyframes spin    { to { transform: rotate(360deg); } }
                 @keyframes dialogPop { from { opacity:0; transform:scale(0.92) translateY(8px); } to { opacity:1; transform:scale(1) translateY(0); } }
-                .ncard:hover { background: #F8FAFF; }
-                .ncard { transition: background 0.12s ease; }
+                .ncard { transition: box-shadow 0.15s ease, transform 0.12s ease; }
+                .ncard:hover { box-shadow: 0 4px 16px rgba(15,31,61,0.1) !important; transform: translateY(-1px); }
             `}</style>
 
             <div style={S.root}>
@@ -271,55 +284,49 @@ export default function NotificationsScreen() {
                         </div>
                     ) : (
                         <div style={S.list}>
-                            {notifications.map(notif => (
-                                <div
-                                    key={notif.notification_id}
-                                    className="ncard"
-                                    style={{
-                                        ...S.card,
-                                        ...(notif.is_read ? {} : S.cardUnread),
-                                    }}
-                                >
-                                    {/* Unread indicator */}
-                                    {!notif.is_read && <div style={S.unreadBar} />}
-
-                                    <button
-                                        style={S.cardInner}
-                                        onClick={() => handleClickNotif(notif)}
+                            {notifications.map(notif => {
+                                const meta  = getNotifMeta(notif.title);
+                                const NIcon = meta.Icon;
+                                return (
+                                    <div
+                                        key={notif.notification_id}
+                                        className="ncard"
+                                        style={{ ...S.card, ...(notif.is_read ? {} : S.cardUnread) }}
                                     >
-                                        {/* Icon */}
-                                        <div style={{ ...S.notifIco, backgroundColor: notif.is_read ? C.slateSoft : C.accentSoft }}>
-                                            <IoNotificationsOutline size={16} color={notif.is_read ? C.muted : C.accent} />
-                                        </div>
+                                        {/* Type-coloured indicator bar */}
+                                        <div style={{ ...S.unreadBar, backgroundColor: meta.color, opacity: notif.is_read ? 0.22 : 1 }} />
 
-                                        {/* Content */}
-                                        <div style={S.cardContent}>
-                                            <div style={S.cardTop}>
-                                                <span style={{ ...S.cardTitle, fontWeight: notif.is_read ? '600' : '800' }}>
-                                                    {notif.title}
-                                                </span>
-                                                {!notif.is_read && (
-                                                    <div style={S.newPill}>New</div>
-                                                )}
+                                        <button style={S.cardInner} onClick={() => handleClickNotif(notif)}>
+                                            {/* Icon badge */}
+                                            <div style={{ ...S.notifIco, backgroundColor: notif.is_read ? C.slateSoft : meta.bg }}>
+                                                <NIcon size={18} color={notif.is_read ? C.mutedLight : meta.color} />
                                             </div>
-                                            <p style={S.cardMsg}>{notif.message}</p>
-                                            <div style={S.cardTime}>
-                                                <IoTimeOutline size={11} color={C.mutedLight} />
-                                                <span style={S.cardTimeText}>{formatTime(notif.created_at)}</span>
-                                            </div>
-                                        </div>
-                                    </button>
 
-                                    {/* Delete */}
-                                    <button
-                                        style={S.deleteBtn}
-                                        onClick={() => handleDelete(notif.notification_id)}
-                                        title="Delete notification"
-                                    >
-                                        <IoTrashOutline size={16} color={C.mutedLight} />
-                                    </button>
-                                </div>
-                            ))}
+                                            {/* Content */}
+                                            <div style={S.cardContent}>
+                                                <div style={S.cardTop}>
+                                                    <span style={{ ...S.cardTitle, fontWeight: notif.is_read ? '500' : '700', opacity: notif.is_read ? 0.75 : 1 }}>
+                                                        {notif.title}
+                                                    </span>
+                                                    {!notif.is_read && (
+                                                        <div style={{ ...S.newPill, backgroundColor: meta.bg, color: meta.color }}>NEW</div>
+                                                    )}
+                                                </div>
+                                                <p style={S.cardMsg}>{notif.message}</p>
+                                                <div style={S.cardTime}>
+                                                    <IoTimeOutline size={11} color={C.mutedLight} />
+                                                    <span style={S.cardTimeText}>{formatTime(notif.created_at)}</span>
+                                                </div>
+                                            </div>
+                                        </button>
+
+                                        {/* Delete */}
+                                        <button style={S.deleteBtn} onClick={() => handleDelete(notif.notification_id)} title="Delete">
+                                            <IoTrashOutline size={16} color={C.mutedLight} />
+                                        </button>
+                                    </div>
+                                );
+                            })}
                         </div>
                     )}
                 </div>
@@ -362,20 +369,21 @@ const S = {
     card: {
         backgroundColor: C.surface,
         borderRadius: 14, border: `1px solid ${C.border}`,
+        boxShadow: '0 1px 4px rgba(15,31,61,0.06)',
         display: 'flex', alignItems: 'stretch',
         overflow: 'hidden', cursor: 'pointer',
         position: 'relative',
     },
-    cardUnread: { backgroundColor: '#F5F8FF', borderColor: `${C.accent}30` },
-    unreadBar:  { width: 4, backgroundColor: C.accent, flexShrink: 0 },
-    cardInner:  { flex: 1, display: 'flex', alignItems: 'flex-start', gap: 12, padding: '14px 12px 14px 14px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' },
+    cardUnread: { backgroundColor: '#F5F8FF', borderColor: `${C.accent}25` },
+    unreadBar:  { width: 4, flexShrink: 0 },
+    cardInner:  { flex: 1, display: 'flex', alignItems: 'flex-start', gap: 12, padding: '14px 14px 14px 16px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' },
 
-    notifIco: { width: 36, height: 36, borderRadius: 10, display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 },
+    notifIco: { width: 42, height: 42, borderRadius: 13, display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 },
 
     cardContent: { flex: 1, minWidth: 0 },
     cardTop:     { display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 },
-    cardTitle:   { fontSize: 14, color: C.text, flex: 1, minWidth: 0 },
-    newPill:     { backgroundColor: C.accentSoft, color: C.accent, fontSize: 10, fontWeight: '700', padding: '2px 7px', borderRadius: 10, flexShrink: 0 },
+    cardTitle:   { fontSize: 14, color: C.text, flex: 1, minWidth: 0, lineHeight: 1.4 },
+    newPill:     { fontSize: 10, fontWeight: '700', padding: '2px 7px', borderRadius: 10, flexShrink: 0, letterSpacing: '0.4px' },
     cardMsg:     { fontSize: 13, color: C.muted, lineHeight: 1.55, margin: '0 0 6px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
     cardTime:    { display: 'flex', alignItems: 'center', gap: 4 },
     cardTimeText:{ fontSize: 11, color: C.mutedLight },

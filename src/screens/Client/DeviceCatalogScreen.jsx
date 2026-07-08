@@ -267,6 +267,8 @@ export default function DeviceCatalogScreen() {
             <style>{`
                 @keyframes spin     { to { transform: rotate(360deg); } }
                 @keyframes modalPop { from { opacity:0; transform:scale(0.93) translateY(10px); } to { opacity:1; transform:scale(1) translateY(0); } }
+                .card-hover { transition: box-shadow 0.2s ease, transform 0.15s ease; }
+                .card-hover:hover { box-shadow: 0 8px 24px rgba(15,31,61,0.12) !important; transform: translateY(-2px); }
             `}</style>
             <div style={S.root}>
                 {/* Page header */}

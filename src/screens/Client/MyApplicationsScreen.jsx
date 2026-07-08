@@ -52,11 +52,12 @@ const STATUS_META = {
 };
 
 const StatusChip = ({ status }) => {
-    const m = STATUS_META[status] || { bg: C.slateSoft, fg: C.slate, dot: C.slate };
+    const m     = STATUS_META[status] || { bg: C.slateSoft, fg: C.slate, dot: C.slate };
+    const label = status === 'Pending_Finance' ? 'In Finance' : status;
     return (
-        <div style={{ display: 'flex', alignItems: 'center', padding: '4px 10px', borderRadius: 20, backgroundColor: m.bg }}>
-            <div style={{ width: 5, height: 5, borderRadius: 3, marginRight: 5, backgroundColor: m.dot }} />
-            <span style={{ fontSize: 11, fontWeight: '700', color: m.fg }}>{status}</span>
+        <div style={{ display: 'flex', alignItems: 'center', padding: '5px 10px', borderRadius: 20, backgroundColor: m.bg, border: `1px solid ${m.dot}28`, flexShrink: 0 }}>
+            <div style={{ width: 6, height: 6, borderRadius: 3, marginRight: 6, backgroundColor: m.dot }} />
+            <span style={{ fontSize: 11, fontWeight: '700', color: m.fg, letterSpacing: '0.2px' }}>{label}</span>
         </div>
     );
 };
@@ -239,7 +240,7 @@ export default function MyApplicationsScreen() {
                             )}
                             <div style={S.viewHint}>
                                 <span style={S.viewHintText}>View</span>
-                                <IoChevronForward size={12} color={C.mutedLight} />
+                                <IoChevronForward size={12} color={C.accent} />
                             </div>
                         </div>
                     </div>
@@ -311,7 +312,11 @@ export default function MyApplicationsScreen() {
 
     return (
         <>
-            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            <style>{`
+                @keyframes spin { to { transform: rotate(360deg); } }
+                .card-hover { transition: box-shadow 0.18s ease, transform 0.12s ease; }
+                .card-hover:hover { box-shadow: 0 6px 20px rgba(15,31,61,0.11) !important; transform: translateY(-2px); }
+            `}</style>
             <div style={S.root}>
                 {/* Page header */}
                 <div style={S.pageHeader}>
@@ -413,11 +418,11 @@ const S = {
     list:    { padding: '18px 28px 40px', flex: 1, maxWidth: 1280, width: '100%', alignSelf: 'center', boxSizing: 'border-box' },
     appGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: 14 },
 
-    appCard: { backgroundColor: C.surface, borderRadius: 16, border: `1px solid ${C.border}`, display: 'flex', flexDirection: 'row', overflow: 'hidden', boxShadow: '0 2px 8px rgba(15,31,61,0.05)', cursor: 'pointer', transition: 'box-shadow 0.18s ease, transform 0.12s ease' },
-    accentBar: { width: 4, flexShrink: 0 },
-    appInner:  { flex: 1, padding: 15, minWidth: 0 },
+    appCard: { backgroundColor: C.surface, borderRadius: 16, border: `1px solid ${C.border}`, display: 'flex', flexDirection: 'row', overflow: 'hidden', boxShadow: '0 2px 10px rgba(15,31,61,0.07)', cursor: 'pointer' },
+    accentBar: { width: 5, flexShrink: 0 },
+    appInner:  { flex: 1, padding: 16, minWidth: 0 },
     appTop:    { display: 'flex', alignItems: 'flex-start', marginBottom: 10 },
-    appDevice: { fontSize: 14, fontWeight: '800', color: C.text, marginBottom: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+    appDevice: { fontSize: 15, fontWeight: '800', color: C.text, marginBottom: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
     appModel:  { fontSize: 12, color: C.muted },
     pillRow:   { display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 10 },
     pill:      { display: 'flex', alignItems: 'center', gap: 4, backgroundColor: C.bg, padding: '4px 8px', borderRadius: 8, border: `1px solid ${C.border}` },
@@ -428,8 +433,8 @@ const S = {
     appFooterRight: { display: 'flex', alignItems: 'center', gap: 8 },
     cancelBtn:      { display: 'flex', alignItems: 'center', gap: 4, backgroundColor: C.roseSoft, padding: '4px 8px', borderRadius: 8, border: `1px solid #FECACA`, cursor: 'pointer' },
     cancelBtnText:  { fontSize: 11, color: C.rose, fontWeight: '700' },
-    viewHint:       { display: 'flex', alignItems: 'center', gap: 2 },
-    viewHintText:   { fontSize: 11, color: C.mutedLight },
+    viewHint:       { display: 'flex', alignItems: 'center', gap: 3, backgroundColor: C.accentSoft, padding: '4px 8px', borderRadius: 8 },
+    viewHintText:   { fontSize: 11, color: C.accent, fontWeight: '600' },
     rejectionBanner:{ display: 'flex', alignItems: 'flex-start', gap: 7, marginTop: 8, padding: 9, backgroundColor: C.roseSoft, borderRadius: 8, border: `1px solid #FECACA` },
     rejectionText:  { fontSize: 11, color: '#7F1D1D', flex: 1, lineHeight: 1.5 },
 
