@@ -159,8 +159,6 @@ export const authAPI = {
         }
     },
 
-    registerOperational: (userData) => api.post('/auth/register-operational', userData),
-
     login: async (loginData) => {
         try {
             console.log('🔵 Login request for:', loginData.email);

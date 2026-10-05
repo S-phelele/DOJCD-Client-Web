@@ -28,7 +28,7 @@ const C = {
     green:      '#059669',
 };
 
-const REGISTER_PATHS = ['/register', '/client-register', '/operational-register'];
+const REGISTER_PATHS = ['/register', '/client-register'];
 const LOGIN_PATHS    = ['/login'];
 
 export default function PublicFooter() {

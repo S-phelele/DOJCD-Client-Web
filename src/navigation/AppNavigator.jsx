@@ -25,7 +25,7 @@ import MyApplicationsScreen     from "../screens/Client/MyApplicationsScreen";
 import NotificationsScreen      from "../screens/Client/NotificationsScreen";   // ← NEW
 import ApplicationDetailsScreen from "../screens/Client/ApplicationDetailsScreen";
 
-const AUTH_ROUTES = ['/', '/about', '/register', '/client-register', '/operational-register', '/login'];
+const AUTH_ROUTES = ['/', '/about', '/register', '/client-register', '/login'];
 
 function AppShell() {
     const location = useLocation();
