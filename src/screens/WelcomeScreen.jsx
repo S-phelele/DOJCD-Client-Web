@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import { useToast } from '../components/ToastProvider';
+import { useAuthConfig } from '../services/useAuthConfig';
 import PublicNavbar from '../components/PublicNavbar';
 import PublicFooter from '../components/PublicFooter';
 import {
@@ -106,6 +107,7 @@ const STATS = [
 export default function WelcomeScreen() {
     const navigate = useNavigate();
     const toast    = useToast();
+    const { config } = useAuthConfig();
     const [status, setStatus] = useState('checking');
 
     useEffect(() => { testBackendConnection(); }, []);
@@ -117,7 +119,7 @@ export default function WelcomeScreen() {
     };
 
     const handleGetStarted = () => {
-        if (status === 'connected') navigate('/register');
+        if (status === 'connected') navigate(config.selfRegistration ? '/register' : '/login');
         else alert('Please ensure the backend server is running before proceeding.');
     };
 
@@ -210,21 +212,23 @@ export default function WelcomeScreen() {
                                 <div style={{ ...spinStyle, borderColor: 'rgba(255,255,255,0.3)', borderTopColor: '#fff' }} />
                             ) : (
                                 <>
-                                    <span style={S.heroPrimaryText}>{isReady ? 'Get Started' : 'Retry Connection'}</span>
+                                    <span style={S.heroPrimaryText}>{isReady ? (config.selfRegistration ? 'Get Started' : 'Sign In') : 'Retry Connection'}</span>
                                     <IoArrowForward size={18} color="#fff" />
                                 </>
                             )}
                         </button>
 
-                        <button
-                            style={{ ...S.heroGhost, ...(!isReady ? S.heroGhostDisabled : {}) }}
-                            onClick={() => navigate('/login')}
-                            disabled={!isReady}
-                        >
-                            <span style={{ ...S.heroGhostText, ...(!isReady ? { color: 'rgba(255,255,255,0.3)' } : {}) }}>
-                                Sign In to Existing Account
-                            </span>
-                        </button>
+                        {config.selfRegistration && (
+                            <button
+                                style={{ ...S.heroGhost, ...(!isReady ? S.heroGhostDisabled : {}) }}
+                                onClick={() => navigate('/login')}
+                                disabled={!isReady}
+                            >
+                                <span style={{ ...S.heroGhostText, ...(!isReady ? { color: 'rgba(255,255,255,0.3)' } : {}) }}>
+                                    Sign In to Existing Account
+                                </span>
+                            </button>
+                        )}
                     </div>
 
                     {/* Stats bar */}

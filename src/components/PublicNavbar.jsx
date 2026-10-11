@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { IoMenuOutline, IoCloseOutline } from 'react-icons/io5';
 import dojLogo from '../assets/images/Department-of-Justice-logo.jpg';
+import { useAuthConfig } from '../services/useAuthConfig';
 
 const C = {
     navy: '#0F1F3D', accent: '#1E4FD8', surface: '#FFFFFF',
@@ -17,6 +18,7 @@ const NAVBAR_H = 64;
 export default function PublicNavbar() {
     const navigate = useNavigate();
     const location = useLocation();
+    const { config } = useAuthConfig();
     const [open, setOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const p = location.pathname;
@@ -37,7 +39,7 @@ export default function PublicNavbar() {
         { id: 'home',     label: 'Home',     to: '/',         show: !isHome,     type: 'text' },
         { id: 'about',    label: 'About',    to: '/about',    show: !isAbout,    type: 'text' },
         { id: 'login',    label: 'Login',    to: '/login',    show: !isLogin,    type: 'outline' },
-        { id: 'register', label: 'Register', to: '/register', show: !isRegister, type: 'filled' },
+        { id: 'register', label: 'Register', to: '/register', show: !isRegister && config.selfRegistration, type: 'filled' },
     ].filter(l => l.show);
 
     const go = (to) => { navigate(to); setOpen(false); };

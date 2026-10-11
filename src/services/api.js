@@ -23,6 +23,7 @@ const getBaseURL = () => {
 };
 
 const BASE_URL = getBaseURL();
+export const API_BASE_URL = BASE_URL;
 
 console.log('🌐 Using API URL:', BASE_URL);
 
@@ -172,6 +173,12 @@ export const authAPI = {
     },
 
     testConnection: () => api.get('/test'),
+
+    // How people sign in (AUTH_PROVIDER on the server): local password, domain credentials, or Microsoft.
+    getConfig: async () => (await api.get('/auth/config', { timeout: 8000 })).data,
+
+    // Microsoft sign-in lands on /auth/callback with a one-time ticket, swapped here for the session.
+    exchangeTicket: async (ticket) => (await api.post('/auth/directory/exchange', { ticket })).data,
 };
 
 // ─── Admin API ──────────────────────────────────────────────────────────────
