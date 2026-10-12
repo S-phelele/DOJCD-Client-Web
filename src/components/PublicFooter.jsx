@@ -13,6 +13,7 @@ import {
     IoCallOutline,
 } from 'react-icons/io5';
 import dojLogo from '../assets/images/Department-of-Justice-logo.jpg';
+import { useAuthConfig } from '../services/useAuthConfig';
 
 const C = {
     navy:       '#0F1F3D',
@@ -35,6 +36,7 @@ export default function PublicFooter() {
     const navigate = useNavigate();
     const location = useLocation();
     const path     = location.pathname;
+    const { config } = useAuthConfig();
 
     const onLogin    = LOGIN_PATHS.includes(path);
     const onRegister = REGISTER_PATHS.includes(path);
@@ -52,16 +54,20 @@ export default function PublicFooter() {
                     <div style={S.ctaInner}>
                         <h2 style={S.ctaTitle}>Ready to get started?</h2>
                         <p style={S.ctaDesc}>
-                            Register your account today and begin your first device application in minutes.
+                            {config.selfRegistration
+                                ? 'Register your account today and begin your first device application in minutes.'
+                                : 'Sign in with your organisation account and begin your first device application in minutes.'}
                         </p>
                         <div style={S.ctaBtns}>
-                            <button style={S.ctaPrimary} onClick={() => navigate('/register')}>
-                                <IoPersonAddOutline size={16} color="#fff" />
-                                <span style={S.ctaPrimaryText}>Create Account</span>
-                            </button>
-                            <button style={S.ctaGhost} onClick={() => navigate('/login')}>
-                                <IoLogInOutline size={16} color="rgba(255,255,255,0.8)" />
-                                <span style={S.ctaGhostText}>Sign In</span>
+                            {config.selfRegistration && (
+                                <button style={S.ctaPrimary} onClick={() => navigate('/register')}>
+                                    <IoPersonAddOutline size={16} color="#fff" />
+                                    <span style={S.ctaPrimaryText}>Create Account</span>
+                                </button>
+                            )}
+                            <button style={config.selfRegistration ? S.ctaGhost : S.ctaPrimary} onClick={() => navigate('/login')}>
+                                <IoLogInOutline size={16} color={config.selfRegistration ? 'rgba(255,255,255,0.8)' : '#fff'} />
+                                <span style={config.selfRegistration ? S.ctaGhostText : S.ctaPrimaryText}>Sign In</span>
                             </button>
                         </div>
                     </div>
@@ -97,7 +103,7 @@ export default function PublicFooter() {
                             { label: 'Home',     path: '/' },
                             { label: 'About',    path: '/about' },
                             { label: 'Sign In',  path: '/login' },
-                            { label: 'Register', path: '/register' },
+                            ...(config.selfRegistration ? [{ label: 'Register', path: '/register' }] : []),
                         ].map(link => (
                             <button key={link.path} style={S.footerLink} onClick={() => navigate(link.path)}>
                                 {link.label}

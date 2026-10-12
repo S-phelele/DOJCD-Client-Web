@@ -5,6 +5,7 @@
 import React from 'react';
 import AuthNavbar from '../components/PublicNavbar';
 import PublicFooter from '../components/PublicFooter';
+import { useAuthConfig } from '../services/useAuthConfig';
 import {
     IoPhonePortraitOutline,
     IoCheckmarkCircleOutline,
@@ -70,7 +71,15 @@ const STATS = [
     { value: 'Secure', label: 'Gov-grade Security' },
 ];
 
+// Step 1 reads differently when people sign in with their organisation account instead of registering.
+const DIRECTORY_STEP_ONE = {
+    num: '01', title: 'Sign In & Verify',
+    desc: 'Sign in with your organisation account. Your profile is created automatically and checked by an administrator before you can apply.',
+};
+
 export default function AboutScreen() {
+    const { config } = useAuthConfig();
+    const steps = config.selfRegistration ? PROCESS_STEPS : [DIRECTORY_STEP_ONE, ...PROCESS_STEPS.slice(1)];
     return (
         <div style={S.root}>
             <AuthNavbar />
@@ -171,9 +180,9 @@ export default function AboutScreen() {
                 <div style={S.sectionInner}>
                     <div style={S.badge}>PROCESS</div>
                     <h2 style={S.sectionTitle}>How It Works</h2>
-                    <p style={S.bodySub}>A simple six-step process from registration to device delivery.</p>
+                    <p style={S.bodySub}>A simple six-step process from {config.selfRegistration ? 'registration' : 'sign-in'} to device delivery.</p>
                     <div style={S.processGrid}>
-                        {PROCESS_STEPS.map((step, i) => (
+                        {steps.map((step, i) => (
                             <div key={i} style={S.processCard}>
                                 <div style={S.processNum}>{step.num}</div>
                                 <h3 style={S.processTitle}>{step.title}</h3>
