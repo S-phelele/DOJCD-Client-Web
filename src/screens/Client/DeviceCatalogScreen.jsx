@@ -2,12 +2,13 @@
 // Updated: ConfirmDialog replaces window.confirm for applying to a device.
 // All original API logic preserved exactly.
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { deviceAPI } from '../../services/api';
 import { useToast } from '../../components/ToastProvider';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import { Sk, SkeletonShimmerStyle } from '../../components/SkeletonLoader';
+import { categoryIcon, categoryChips } from '../../utils/categories';
 import {
     IoPhonePortraitOutline,
     IoCalendarOutline,
@@ -40,7 +41,6 @@ export default function DeviceCatalogScreen() {
     const navigate = useNavigate();
 
     const [devices,       setDevices]       = useState([]);
-    const [filtered,      setFiltered]      = useState([]);
     const [loading,       setLoading]       = useState(true);
     const [refreshing,    setRefreshing]    = useState(false);
     const [search,        setSearch]        = useState('');
@@ -50,9 +50,10 @@ export default function DeviceCatalogScreen() {
     const [dialog,        setDialog]        = useState(null);
     const [applying,      setApplying]      = useState(null); // device being applied for
     const [detailDevice,  setDetailDevice]  = useState(null); // device open in detail modal
+    const [knownCategories, setKnownCategories] = useState([]); // the server's categories, in the Admin's order
+    const [categoryId,    setCategoryId]    = useState('all');
 
     useEffect(() => { init(); }, []);
-    useEffect(() => { filterDevices(); }, [search, devices]);
 
     const init = async () => {
         try {
@@ -91,6 +92,12 @@ export default function DeviceCatalogScreen() {
                     list = rawDev;
                 }
                 setDevices(list);
+
+                // Categories only add the filter chips and their order: an older server without them just shows no chips.
+                try {
+                    const cr = await deviceAPI.getCategories();
+                    setKnownCategories(cr?.data?.data?.categories || []);
+                } catch (_) { setKnownCategories([]); }
             }
         } catch (err) {
             console.error('Device catalog init error:', err);
@@ -100,17 +107,20 @@ export default function DeviceCatalogScreen() {
         }
     };
 
-    const filterDevices = () => {
-        const safeDevices = Array.isArray(devices) ? devices : [];
-        if (!search.trim()) { setFiltered(safeDevices); return; }
+    // Worked out while rendering (not in an effect), so the list never flashes empty between loading and filtering.
+    const filtered = useMemo(() => {
+        const all = Array.isArray(devices) ? devices : [];
+        const inCategory = categoryId === 'all' ? all : all.filter(d => String(d.category_id) === String(categoryId));
+        if (!search.trim()) return inCategory;
         const q = search.toLowerCase();
-        setFiltered(safeDevices.filter(d =>
+        return inCategory.filter(d =>
             d.device_name?.toLowerCase().includes(q) ||
             d.model?.toLowerCase().includes(q) ||
             d.manufacturer?.toLowerCase().includes(q) ||
-            d.plan_name?.toLowerCase().includes(q)
-        ));
-    };
+            d.plan_name?.toLowerCase().includes(q) ||
+            d.category_name?.toLowerCase().includes(q)
+        );
+    }, [devices, categoryId, search]);
 
     const onRefresh = async () => {
         setRefreshing(true);
@@ -153,15 +163,19 @@ export default function DeviceCatalogScreen() {
             .finally(() => setApplying(null));
     };
 
-    const renderDevice = (item) => (
+    const chips = categoryChips(Array.isArray(devices) ? devices : [], knownCategories);
+
+    const renderDevice = (item) => {
+        const CategoryIcon = categoryIcon(item.category_name);
+        return (
         <div key={item.device_id} className="card-hover" style={S.card}>
             <div style={S.cardHeader}>
                 <div style={S.deviceIconWrap}>
-                    <IoPhonePortraitOutline size={22} color={C.accent} />
+                    <CategoryIcon size={22} color={C.accent} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={S.deviceName}>{item.device_name}</div>
-                    <div style={S.deviceMake}>{item.manufacturer}</div>
+                    <div style={S.deviceMake}>{item.manufacturer || item.category_name}</div>
                 </div>
                 <div style={S.pricePill}>
                     <div style={S.priceAmount}>R{item.monthly_cost}</div>
@@ -170,7 +184,10 @@ export default function DeviceCatalogScreen() {
             </div>
 
             <div style={S.tagsRow}>
-                <div style={S.tag}><span style={S.tagText}>{item.model}</span></div>
+                {item.category_name && item.manufacturer && (
+                    <div style={{ ...S.tag, backgroundColor: C.greenSoft }}><span style={{ ...S.tagText, color: C.green }}>{item.category_name}</span></div>
+                )}
+                {item.model && <div style={S.tag}><span style={S.tagText}>{item.model}</span></div>}
                 <div style={{ ...S.tag, backgroundColor: C.accentSoft }}>
                     <span style={{ ...S.tagText, color: C.accent }}>{item.plan_name}</span>
                 </div>
@@ -196,7 +213,8 @@ export default function DeviceCatalogScreen() {
                 </button>
             </div>
         </div>
-    );
+        );
+    };
 
     if (loading) {
         return (
@@ -256,7 +274,7 @@ export default function DeviceCatalogScreen() {
             <div style={S.center}>
                 <div style={S.gateIcon}><IoAlertCircleOutline size={36} color={C.amber} /></div>
                 <div style={S.gateTitle}>Not Yet Eligible</div>
-                <div style={S.gateSub}>Your account must be verified before you can browse and apply for devices.</div>
+                <div style={S.gateSub}>Your account must be verified before you can browse and apply from the catalogue.</div>
                 <button style={S.gateBtn} onClick={() => navigate('/client-dashboard')}>Back to Dashboard</button>
             </div>
         );
@@ -278,8 +296,8 @@ export default function DeviceCatalogScreen() {
                             <IoPhonePortraitOutline size={20} color="rgba(255,255,255,0.9)" />
                         </div>
                         <div>
-                            <h1 style={S.pageTitle}>Device Catalogue</h1>
-                            <p style={S.pageSub}>{filtered.length} device{filtered.length !== 1 ? 's' : ''} available</p>
+                            <h1 style={S.pageTitle}>Catalogue</h1>
+                            <p style={S.pageSub}>{filtered.length} item{filtered.length !== 1 ? 's' : ''} available</p>
                         </div>
                     </div>
                     <button style={S.refreshBtn} onClick={onRefresh} disabled={refreshing}>
@@ -293,7 +311,7 @@ export default function DeviceCatalogScreen() {
                         <IoSearchOutline size={18} color={searchFocused ? C.accent : C.muted} />
                         <input
                             type="text" style={S.searchInput}
-                            placeholder="Search by name, model or plan…"
+                            placeholder="Search by name, category, model or plan…"
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             onFocus={() => setSearchFocused(true)}
@@ -307,14 +325,32 @@ export default function DeviceCatalogScreen() {
                     </div>
                 </div>
 
+                {/* Category chips: only when there is more than one kind of item on offer */}
+                {chips.length > 1 && (
+                    <div style={S.chipsWrap}>
+                        <div style={S.chipsRow} role="tablist" aria-label="Categories">
+                            {[{ id: 'all', name: 'All', count: devices.length }, ...chips].map(chip => {
+                                const active = String(categoryId) === String(chip.id);
+                                return (
+                                    <button key={chip.id} role="tab" aria-selected={active}
+                                            style={{ ...S.chip, ...(active ? S.chipActive : {}) }}
+                                            onClick={() => setCategoryId(chip.id)}>
+                                        {chip.name} <span style={{ ...S.chipCount, ...(active ? { color: '#fff', opacity: 0.85 } : {}) }}>{chip.count}</span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
+
                 {/* Device grid */}
                 <div style={S.grid}>
                     {filtered.length === 0 ? (
                         <div style={S.empty}>
                             <div style={S.emptyIcon}><IoSearchOutline size={28} color={C.mutedLight} /></div>
-                            <div style={S.emptyTitle}>{search ? 'No results' : 'No devices available'}</div>
-                            <div style={S.emptySub}>{search ? `No devices match "${search}"` : 'Check back later'}</div>
-                            {search && <button style={S.clearSearchBtn} onClick={() => setSearch('')}>Clear search</button>}
+                            <div style={S.emptyTitle}>{search || categoryId !== 'all' ? 'No results' : 'Nothing available yet'}</div>
+                            <div style={S.emptySub}>{search ? `Nothing matches "${search}"` : categoryId !== 'all' ? 'Nothing is on offer in this category' : 'Check back later'}</div>
+                            {(search || categoryId !== 'all') && <button style={S.clearSearchBtn} onClick={() => { setSearch(''); setCategoryId('all'); }}>Clear filters</button>}
                         </div>
                     ) : (
                         <div style={S.cardGrid}>{filtered.map(renderDevice)}</div>
@@ -333,11 +369,11 @@ export default function DeviceCatalogScreen() {
                             {/* Modal header */}
                             <div style={{ padding: '18px 18px 14px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: 12 }}>
                                 <div style={{ width: 50, height: 50, borderRadius: 14, background: 'linear-gradient(135deg, #EBF0FF 0%, #D4E0FF 100%)', display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 }}>
-                                    <IoPhonePortraitOutline size={24} color={C.accent} />
+                                    {React.createElement(categoryIcon(detailDevice.category_name), { size: 24, color: C.accent })}
                                 </div>
                                 <div style={{ flex: 1, minWidth: 0 }}>
                                     <div style={{ fontSize: 16, fontWeight: '800', color: C.text, marginBottom: 2 }}>{detailDevice.device_name}</div>
-                                    <div style={{ fontSize: 12, color: C.muted }}>{detailDevice.manufacturer}</div>
+                                    <div style={{ fontSize: 12, color: C.muted }}>{detailDevice.manufacturer || detailDevice.category_name}</div>
                                 </div>
                                 <div style={{ background: 'linear-gradient(135deg, #D1FAE5, #A7F3D0)', padding: '8px 12px', borderRadius: 11, display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
                                     <div style={{ fontSize: 16, fontWeight: '900', color: '#047857' }}>R{detailDevice.monthly_cost}</div>
@@ -351,8 +387,9 @@ export default function DeviceCatalogScreen() {
                             {/* Scrollable specs */}
                             <div style={{ flex: 1, overflowY: 'auto', padding: '0 18px' }}>
                                 {[
-                                    { label: 'Model',          value: detailDevice.model },
-                                    { label: 'Manufacturer',   value: detailDevice.manufacturer },
+                                    { label: 'Category',       value: detailDevice.category_name },
+                                    ...(detailDevice.model ? [{ label: 'Model', value: detailDevice.model }] : []),
+                                    ...(detailDevice.manufacturer ? [{ label: 'Manufacturer', value: detailDevice.manufacturer }] : []),
                                     { label: 'Plan',           value: detailDevice.plan_name },
                                     { label: 'Monthly Cost',   value: `R${detailDevice.monthly_cost}`, color: C.green },
                                     { label: 'Contract',       value: `${detailDevice.contract_duration_months} Months` },
@@ -382,7 +419,7 @@ export default function DeviceCatalogScreen() {
                                     disabled={!!applying}
                                 >
                                     <span style={{ color: '#fff', fontSize: 14, fontWeight: '700' }}>
-                                        {applying === detailDevice.device_id ? 'Applying…' : 'Apply for this Device'}
+                                        {applying === detailDevice.device_id ? 'Applying…' : 'Apply Now'}
                                     </span>
                                     {applying !== detailDevice.device_id && <IoArrowForward size={16} color="#fff" />}
                                 </button>
@@ -411,6 +448,11 @@ const S = {
     pageSub:        { fontSize: 11, color: 'rgba(255,255,255,0.5)', marginTop: 1 },
     refreshBtn:     { padding: '7px 14px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.18)', background: 'rgba(255,255,255,0.1)', cursor: 'pointer', fontSize: 13, color: '#fff', fontWeight: '600' },
 
+    chipsWrap: { padding: '12px 28px 0', maxWidth: 1280, width: '100%', alignSelf: 'center', boxSizing: 'border-box' },
+    chipsRow:  { display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 },
+    chip:      { flexShrink: 0, backgroundColor: C.surface, border: `1.5px solid ${C.border}`, color: C.text, borderRadius: 20, padding: '8px 14px', fontSize: 13, fontWeight: '600', cursor: 'pointer', whiteSpace: 'nowrap' },
+    chipActive:{ backgroundColor: C.navy, borderColor: C.navy, color: '#fff' },
+    chipCount: { color: C.mutedLight, fontWeight: '700', marginLeft: 4, fontSize: 12 },
     searchWrap: { padding: '16px 28px 0', maxWidth: 1280, width: '100%', alignSelf: 'center', boxSizing: 'border-box' },
     searchBar:  { display: 'flex', alignItems: 'center', gap: 10, backgroundColor: C.surface, border: `1.5px solid ${C.border}`, borderRadius: 14, padding: '11px 16px', boxShadow: '0 1px 4px rgba(15,31,61,0.04)' },
     searchBarFocused: { borderColor: C.accent, backgroundColor: '#FAFBFF', boxShadow: `0 0 0 3px ${C.accent}18` },

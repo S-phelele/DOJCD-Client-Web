@@ -199,6 +199,7 @@ export const adminAPI = {
 // ─── Device API ─────────────────────────────────────────────────────────────
 export const deviceAPI = {
     getAvailableDevices: () => api.get('/applications/devices'),
+    getCategories: () => api.get('/device-categories'),
     getDeviceDetails: (deviceId) => api.get(`/applications/devices/${deviceId}`),
     submitApplication: (clientUserId, deviceId) =>
         api.post('/applications/applications', {

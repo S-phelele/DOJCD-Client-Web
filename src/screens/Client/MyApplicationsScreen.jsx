@@ -332,7 +332,7 @@ export default function MyApplicationsScreen() {
                     <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                         <button style={S.browseBtn} onClick={() => navigate('/device-catalog')}>
                             <IoAdd size={16} color="#fff" />
-                            <span style={S.browseBtnText}>Browse Devices</span>
+                            <span style={S.browseBtnText}>Browse Catalogue</span>
                         </button>
                         <button style={S.iconBtn} onClick={onRefresh} disabled={refreshing}>
                             <IoRefreshOutline size={17} color="rgba(255,255,255,0.7)"
@@ -379,7 +379,7 @@ export default function MyApplicationsScreen() {
                                 {filter === 'All' ? 'Browse available devices to get started' : `You have no ${filter.toLowerCase()} applications`}
                             </div>
                             {filter === 'All' && (
-                                <button style={S.emptyBtn} onClick={() => navigate('/device-catalog')}>Browse Devices</button>
+                                <button style={S.emptyBtn} onClick={() => navigate('/device-catalog')}>Browse Catalogue</button>
                             )}
                         </div>
                     ) : (
