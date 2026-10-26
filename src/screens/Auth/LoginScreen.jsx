@@ -5,6 +5,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authAPI } from '../../services/api';
+import { useAuthConfig } from '../../services/useAuthConfig';
+import { microsoftSignInUrl } from '../../services/authConfig';
+import { saveClientSession } from '../../services/session';
 import { useToast } from '../../components/ToastProvider';
 import PublicNavbar from '../../components/PublicNavbar';
 import PublicFooter from '../../components/PublicFooter';
@@ -37,6 +40,8 @@ const C = {
 export default function LoginScreen() {
     const toast    = useToast();
     const navigate = useNavigate();
+    const { config } = useAuthConfig();
+    const usesDomainAccount = config.provider === 'ldap';
 
     const [formData,     setFormData]     = useState({ email: '', password: '', rememberMe: false });
     const [loading,      setLoading]      = useState(false);
@@ -47,10 +52,11 @@ export default function LoginScreen() {
     const validate = () => {
         const e = { email: '', password: '' };
         let ok = true;
-        if (!formData.email.trim()) { e.email = 'Email is required'; ok = false; }
-        else if (!/\S+@\S+\.\S+/.test(formData.email)) { e.email = 'Enter a valid email address'; ok = false; }
+        if (!formData.email.trim()) { e.email = usesDomainAccount ? 'Username or email is required' : 'Email is required'; ok = false; }
+        else if (!usesDomainAccount && !/\S+@\S+\.\S+/.test(formData.email)) { e.email = 'Enter a valid email address'; ok = false; }
         if (!formData.password) { e.password = 'Password is required'; ok = false; }
-        else if (formData.password.length < 6) { e.password = 'At least 6 characters required'; ok = false; }
+        // The directory decides what a valid password is; only our own passwords have a minimum length here.
+        else if (!usesDomainAccount && formData.password.length < 6) { e.password = 'At least 6 characters required'; ok = false; }
         setErrors(e);
         return ok;
     };
@@ -67,9 +73,7 @@ export default function LoginScreen() {
             const accessToken  = body.data?.accessToken;
             const refreshToken = body.data?.refreshToken;
             if (!user) throw new Error('No user data received from server');
-            localStorage.setItem('user', JSON.stringify(user));
-            if (accessToken)  localStorage.setItem('clientToken', accessToken);
-            if (refreshToken) localStorage.setItem('clientRefreshToken', refreshToken);
+            saveClientSession({ user, accessToken, refreshToken });
             if (formData.rememberMe) localStorage.setItem('rememberedEmail', formData.email);
             else localStorage.removeItem('rememberedEmail');
             toast.success('Welcome back!', body.message || 'Login successful');
@@ -118,20 +122,30 @@ export default function LoginScreen() {
                 <div style={S.pageBody}>
                     <div className="login-card" style={S.card}>
                         <h2 style={S.cardTitle}>Sign In</h2>
-                        <p style={S.cardSub}>Enter your credentials to continue</p>
+                        <p style={S.cardSub}>{config.loginMethod === 'microsoft' ? 'Use your organisation account to continue' : 'Enter your credentials to continue'}</p>
 
+                        {config.loginMethod === 'microsoft' ? (
+                            <a href={microsoftSignInUrl()} style={S.msBtn}>
+                                <span aria-hidden style={S.msLogo}>
+                                    <i style={{ ...S.msSq, background: '#F25022' }} /><i style={{ ...S.msSq, background: '#7FBA00' }} />
+                                    <i style={{ ...S.msSq, background: '#00A4EF' }} /><i style={{ ...S.msSq, background: '#FFB900' }} />
+                                </span>
+                                Sign in with Microsoft
+                            </a>
+                        ) : (
+                        <>
                         {/* Wrapping in <form> lets the browser offer "Save password?" on success */}
                         <form onSubmit={e => { e.preventDefault(); handleLogin(); }} autoComplete="on">
 
                         {/* Email */}
                         <div style={S.fieldWrap}>
-                            <label style={S.label}>EMAIL ADDRESS</label>
+                            <label style={S.label}>{usesDomainAccount ? 'USERNAME OR EMAIL' : 'EMAIL ADDRESS'}</label>
                             <div style={{ ...S.inputRow, ...(focused === 'email' ? S.inputFocused : {}), ...(errors.email ? S.inputError : {}) }}>
                                 <IoMailOutline size={18} color={errors.email ? C.error : focused === 'email' ? C.accent : C.muted} style={S.icoL} />
                                 <input
-                                    type="email" name="email" autoComplete="email"
+                                    type={usesDomainAccount ? 'text' : 'email'} name="email" autoComplete={usesDomainAccount ? 'username' : 'email'}
                                     style={S.input}
-                                    placeholder="your.email@dojcd.gov.za"
+                                    placeholder={usesDomainAccount ? 'username, email or DOMAIN\\username' : 'your.email@dojcd.gov.za'}
                                     autoCapitalize="off" value={formData.email}
                                     onFocus={() => setFocused('email')} onBlur={() => setFocused(null)}
                                     onChange={e => { setFormData({ ...formData, email: e.target.value }); if (errors.email) setErrors({ ...errors, email: '' }); }}
@@ -170,9 +184,11 @@ export default function LoginScreen() {
                                 </div>
                                 <span style={S.remLabel}>Remember me</span>
                             </button>
-                            <button type="button" style={S.forgotText} onClick={() => toast.info('Coming Soon', 'Password reset coming soon.')}>
-                                Forgot password?
-                            </button>
+                            {config.passwordManagedLocally && (
+                                <button type="button" style={S.forgotText} onClick={() => toast.info('Coming Soon', 'Password reset coming soon.')}>
+                                    Forgot password?
+                                </button>
+                            )}
                         </div>
 
                         {/* Submit — type="submit" triggers the browser password-save prompt */}
@@ -188,23 +204,34 @@ export default function LoginScreen() {
                         </button>
 
                         </form>
+                        </>
+                        )}
 
-                        {/* Divider */}
-                        <div style={S.divider}>
-                            <div style={S.divLine} />
-                            <span style={S.divText}>NEW USER?</span>
-                            <div style={S.divLine} />
-                        </div>
+                        {config.selfRegistration ? (
+                            <>
+                                {/* Divider */}
+                                <div style={S.divider}>
+                                    <div style={S.divLine} />
+                                    <span style={S.divText}>NEW USER?</span>
+                                    <div style={S.divLine} />
+                                </div>
 
-                        {/* Register card */}
-                        <button type="button" style={S.regCard} onClick={() => navigate('/client-register')} disabled={loading}>
-                            <div style={S.regIco}><IoPersonOutline size={22} color={C.accent} /></div>
-                            <div style={{ flex: 1, textAlign: 'left' }}>
-                                <div style={S.regTitle}>Register as Client</div>
-                                <div style={S.regSub}>Request and track devices</div>
-                            </div>
-                            <IoArrowForward size={16} color={C.accent} />
-                        </button>
+                                {/* Register card */}
+                                <button type="button" style={S.regCard} onClick={() => navigate('/client-register')} disabled={loading}>
+                                    <div style={S.regIco}><IoPersonOutline size={22} color={C.accent} /></div>
+                                    <div style={{ flex: 1, textAlign: 'left' }}>
+                                        <div style={S.regTitle}>Register as Client</div>
+                                        <div style={S.regSub}>Request and track devices</div>
+                                    </div>
+                                    <IoArrowForward size={16} color={C.accent} />
+                                </button>
+                            </>
+                        ) : (
+                            <p style={S.noRegister}>
+                                First time here? There is nothing to register: sign in with your organisation account and your
+                                DOJCD Connect profile is created for you.
+                            </p>
+                        )}
                     </div>
 
                     {/* Trust indicators */}
@@ -277,6 +304,11 @@ const S = {
     regIco:   { width: 44, height: 44, borderRadius: 12, backgroundColor: C.accentSoft, display: 'flex', justifyContent: 'center', alignItems: 'center', flexShrink: 0 },
     regTitle: { fontSize: 14, fontWeight: '700', color: C.accent, marginBottom: 2 },
     regSub:   { fontSize: 11, color: C.muted },
+
+    msBtn:   { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, width: '100%', boxSizing: 'border-box', padding: '15px', border: `1.5px solid ${C.border}`, borderRadius: 14, backgroundColor: C.surface, color: C.text, fontSize: 15, fontWeight: '700', textDecoration: 'none', cursor: 'pointer', marginBottom: 24 },
+    msLogo:  { display: 'grid', gridTemplateColumns: '10px 10px', gap: 2 },
+    msSq:    { display: 'block', width: 10, height: 10 },
+    noRegister: { fontSize: 12, color: C.muted, lineHeight: 1.6, textAlign: 'center', margin: 0 },
 
     trustRow:   { display: 'flex', justifyContent: 'center', gap: 20, marginBottom: 8 },
     trustItem:  { display: 'flex', alignItems: 'center', gap: 5 },

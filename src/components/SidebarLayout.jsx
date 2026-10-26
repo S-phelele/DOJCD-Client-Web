@@ -50,7 +50,7 @@ export const C = {
 
 const NAV_ITEMS = [
     { key: 'dashboard',     label: 'Dashboard',     path: '/client-dashboard', icon: IoGridOutline },
-    { key: 'devices',       label: 'Devices',        path: '/device-catalog',   icon: IoPhonePortraitOutline },
+    { key: 'devices',       label: 'Catalogue',      path: '/device-catalog',   icon: IoPhonePortraitOutline },
     { key: 'applications',  label: 'Applications',   path: '/my-applications',  icon: IoDocumentTextOutline },
     { key: 'notifications', label: 'Notifications',  path: '/notifications',    icon: IoNotificationsOutline, isBell: true },
     { key: 'profile',       label: 'Profile',        path: '/complete-profile', icon: IoPersonOutline },

@@ -1,6 +1,6 @@
 // screens/Client/ClientDashboard.jsx
 // Redesigned dashboard:
-//  - Browse Devices → navigates to /device-catalog
+//  - Browse Catalogue → navigates to /device-catalog
 //  - My Applications / See All → navigates to /my-applications
 //  - Notifications bell → navigates to /notifications
 //  - Profile completion reminder stays until profile done
@@ -434,7 +434,7 @@ export default function ClientDashboard() {
                                         </div>
                                         <div style={S.emptyTitle}>No applications yet</div>
                                         <div style={S.emptySub}>Browse available devices and submit your first application.</div>
-                                        <button style={S.emptyBtn} onClick={() => navigate('/device-catalog')}>Browse Devices</button>
+                                        <button style={S.emptyBtn} onClick={() => navigate('/device-catalog')}>Browse Catalogue</button>
                                     </div>
                                 </div>
                             )}
@@ -518,7 +518,7 @@ export default function ClientDashboard() {
                                             style={{ backgroundColor: C.navy, padding: '9px 18px', borderRadius: 10, border: 'none', color: '#fff', fontWeight: '700', fontSize: 13, cursor: 'pointer', width: '100%' }}
                                             onClick={() => navigate('/device-catalog')}
                                         >
-                                            Browse Devices
+                                            Browse Catalogue
                                         </button>
                                     )}
                                 </div>
@@ -546,7 +546,7 @@ export default function ClientDashboard() {
                                             <IoPhonePortraitOutline size={18} color="#fff" />
                                         </div>
                                         <div style={{ flex: 1, textAlign: 'left' }}>
-                                            <div style={S.actionBtnLabel}>Browse Devices</div>
+                                            <div style={S.actionBtnLabel}>Browse Catalogue</div>
                                             <div style={S.actionBtnHint}>{!hasProfile ? 'Profile needed' : !isEligible ? 'Pending eligibility' : 'View catalogue'}</div>
                                         </div>
                                         <IoArrowForward size={14} color="rgba(255,255,255,0.45)" />

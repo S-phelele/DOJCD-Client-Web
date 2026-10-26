@@ -8,7 +8,9 @@ import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-ro
 import { ToastProvider } from "../components/ToastProvider";
 import SidebarLayout from "../components/SidebarLayout";
 import { useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
 import { notificationAPI } from "../services/api";
+import { useAuthConfig } from "../services/useAuthConfig";
 
 // Public screens
 import WelcomeScreen        from "../screens/WelcomeScreen";
@@ -16,6 +18,7 @@ import AboutScreen          from "../screens/AboutScreen";
 import RegisterScreen       from "../screens/Auth/RegisterScreen";
 import ClientRegisterScreen from "../screens/Auth/ClientRegisterScreen";
 import LoginScreen          from "../screens/Auth/LoginScreen";
+import AuthCallbackScreen   from "../screens/Auth/AuthCallbackScreen";
 
 // Client screens
 import ClientDashboard          from "../screens/Client/ClientDashboard";
@@ -25,7 +28,14 @@ import MyApplicationsScreen     from "../screens/Client/MyApplicationsScreen";
 import NotificationsScreen      from "../screens/Client/NotificationsScreen";   // ← NEW
 import ApplicationDetailsScreen from "../screens/Client/ApplicationDetailsScreen";
 
-const AUTH_ROUTES = ['/', '/about', '/register', '/client-register', '/operational-register', '/login'];
+const AUTH_ROUTES = ['/', '/about', '/register', '/client-register', '/login', '/auth/callback'];
+
+// With directory sign-in (Active Directory / Microsoft) nobody registers: the account is created on first sign-in.
+function RegistrationGate({ children }) {
+    const { config, loaded } = useAuthConfig();
+    if (!loaded) return null;
+    return config.selfRegistration ? children : <Navigate to="/login" replace />;
+}
 
 function AppShell() {
     const location = useLocation();
@@ -56,9 +66,10 @@ function AppShell() {
             {/* ── Public ── */}
             <Route path="/"                  element={<WelcomeScreen />} />
             <Route path="/about"             element={<AboutScreen />} />
-            <Route path="/register"          element={<RegisterScreen />} />
-            <Route path="/client-register"   element={<ClientRegisterScreen />} />
+            <Route path="/register"          element={<RegistrationGate><RegisterScreen /></RegistrationGate>} />
+            <Route path="/client-register"   element={<RegistrationGate><ClientRegisterScreen /></RegistrationGate>} />
             <Route path="/login"             element={<LoginScreen />} />
+            <Route path="/auth/callback"     element={<AuthCallbackScreen />} />
 
             {/* ── Client (authenticated) ── */}
             <Route path="/client-dashboard"  element={<ClientDashboard />} />

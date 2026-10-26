@@ -23,6 +23,7 @@ const getBaseURL = () => {
 };
 
 const BASE_URL = getBaseURL();
+export const API_BASE_URL = BASE_URL;
 
 console.log('🌐 Using API URL:', BASE_URL);
 
@@ -159,8 +160,6 @@ export const authAPI = {
         }
     },
 
-    registerOperational: (userData) => api.post('/auth/register-operational', userData),
-
     login: async (loginData) => {
         try {
             console.log('🔵 Login request for:', loginData.email);
@@ -174,6 +173,12 @@ export const authAPI = {
     },
 
     testConnection: () => api.get('/test'),
+
+    // How people sign in (AUTH_PROVIDER on the server): local password, domain credentials, or Microsoft.
+    getConfig: async () => (await api.get('/auth/config', { timeout: 8000 })).data,
+
+    // Microsoft sign-in lands on /auth/callback with a one-time ticket, swapped here for the session.
+    exchangeTicket: async (ticket) => (await api.post('/auth/directory/exchange', { ticket })).data,
 };
 
 // ─── Admin API ──────────────────────────────────────────────────────────────
@@ -194,6 +199,7 @@ export const adminAPI = {
 // ─── Device API ─────────────────────────────────────────────────────────────
 export const deviceAPI = {
     getAvailableDevices: () => api.get('/applications/devices'),
+    getCategories: () => api.get('/device-categories'),
     getDeviceDetails: (deviceId) => api.get(`/applications/devices/${deviceId}`),
     submitApplication: (clientUserId, deviceId) =>
         api.post('/applications/applications', {
