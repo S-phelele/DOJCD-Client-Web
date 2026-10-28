@@ -42,6 +42,9 @@ export default function LoginScreen() {
     const navigate = useNavigate();
     const { config } = useAuthConfig();
     const usesDomainAccount = config.provider === 'ldap';
+    // With Microsoft sign-in the email/password form is only for clients who registered here (when that is allowed).
+    const showPasswordForm = config.loginMethod !== 'microsoft' || config.selfRegistration;
+    const directoryWithRegistration = config.directory && config.selfRegistration;
 
     const [formData,     setFormData]     = useState({ email: '', password: '', rememberMe: false });
     const [loading,      setLoading]      = useState(false);
@@ -122,9 +125,11 @@ export default function LoginScreen() {
                 <div style={S.pageBody}>
                     <div className="login-card" style={S.card}>
                         <h2 style={S.cardTitle}>Sign In</h2>
-                        <p style={S.cardSub}>{config.loginMethod === 'microsoft' ? 'Use your organisation account to continue' : 'Enter your credentials to continue'}</p>
+                        <p style={S.cardSub}>{config.loginMethod === 'microsoft'
+                            ? (config.selfRegistration ? 'Use your organisation account, or the account you registered' : 'Use your organisation account to continue')
+                            : 'Enter your credentials to continue'}</p>
 
-                        {config.loginMethod === 'microsoft' ? (
+                        {config.loginMethod === 'microsoft' && (
                             <a href={microsoftSignInUrl()} style={S.msBtn}>
                                 <span aria-hidden style={S.msLogo}>
                                     <i style={{ ...S.msSq, background: '#F25022' }} /><i style={{ ...S.msSq, background: '#7FBA00' }} />
@@ -132,7 +137,15 @@ export default function LoginScreen() {
                                 </span>
                                 Sign in with Microsoft
                             </a>
-                        ) : (
+                        )}
+                        {config.loginMethod === 'microsoft' && config.selfRegistration && (
+                            <div style={S.divider}>
+                                <div style={S.divLine} />
+                                <span style={S.divText}>OR USE A REGISTERED ACCOUNT</span>
+                                <div style={S.divLine} />
+                            </div>
+                        )}
+                        {showPasswordForm && (
                         <>
                         {/* Wrapping in <form> lets the browser offer "Save password?" on success */}
                         <form onSubmit={e => { e.preventDefault(); handleLogin(); }} autoComplete="on">
@@ -212,7 +225,7 @@ export default function LoginScreen() {
                                 {/* Divider */}
                                 <div style={S.divider}>
                                     <div style={S.divLine} />
-                                    <span style={S.divText}>NEW USER?</span>
+                                    <span style={S.divText}>{directoryWithRegistration ? 'NOT IN THE DIRECTORY?' : 'NEW USER?'}</span>
                                     <div style={S.divLine} />
                                 </div>
 
@@ -221,7 +234,7 @@ export default function LoginScreen() {
                                     <div style={S.regIco}><IoPersonOutline size={22} color={C.accent} /></div>
                                     <div style={{ flex: 1, textAlign: 'left' }}>
                                         <div style={S.regTitle}>Register as Client</div>
-                                        <div style={S.regSub}>Request and track devices</div>
+                                        <div style={S.regSub}>{directoryWithRegistration ? 'For clients without an organisation account' : 'Request and track devices'}</div>
                                     </div>
                                     <IoArrowForward size={16} color={C.accent} />
                                 </button>

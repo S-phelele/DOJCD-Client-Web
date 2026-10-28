@@ -305,6 +305,7 @@ export default function ClientRegisterScreen() {
             const status = error.response?.status;
             const serverMessage = error.response?.data?.message;
             if (!error.response)  { toast.error('Connection Error', 'Network error. Please check your connection.'); }
+            else if (status === 409 && error.response?.data?.code === 'USE_DIRECTORY_SIGN_IN') { toast.error('Use your organisation account', serverMessage); setErrors(prev => ({ ...prev, email: 'This address belongs to an organisation account: sign in instead' })); setCurrentStep(1); }
             else if (status === 409) { toast.error('Account Already Exists', serverMessage || 'An account with this email already exists.'); setErrors(prev => ({ ...prev, email: 'This email is already registered' })); setCurrentStep(1); }
             else if (status === 422) { toast.error('Invalid Data', serverMessage || 'Please check your information and try again.'); }
             else { toast.error('Registration Failed', serverMessage || 'Registration failed. Please try again.'); }

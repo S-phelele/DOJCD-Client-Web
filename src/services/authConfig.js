@@ -19,7 +19,14 @@ export async function fetchAuthConfig({ force = false } = {}) {
     try {
         const body = await authAPI.getConfig();
         if (body?.data && typeof body.data.provider === 'string') {
-            cached = { ...LOCAL_AUTH, ...body.data };
+            // The client portal cares about whether CLIENTS may register (clientRegistration). When the server
+            // allows it next to the organisation sign-in, the screens treat registration and "forgot password"
+            // as available, exactly as in local mode. An older server does not send the field.
+            const clients = body.data.clientRegistration;
+            cached = {
+                ...LOCAL_AUTH, ...body.data,
+                ...(typeof clients === 'boolean' ? { selfRegistration: clients, passwordManagedLocally: clients || body.data.passwordManagedLocally === true } : {}),
+            };
             return cached;
         }
     } catch (_) { /* unreachable, or an older server: fall through */ }

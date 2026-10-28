@@ -23,6 +23,16 @@ describe('fetchAuthConfig', () => {
         expect((await fetchAuthConfig()).provider).toBe('ldap');
     });
 
+    it('lets clients register and reset passwords when the server says clientRegistration, even in a directory mode', async () => {
+        mockGetConfig.mockResolvedValue({ data: { provider: 'entra', directory: true, loginMethod: 'microsoft', selfRegistration: false, passwordManagedLocally: false, clientRegistration: true } });
+        expect(await fetchAuthConfig()).toMatchObject({ loginMethod: 'microsoft', selfRegistration: true, passwordManagedLocally: true });
+    });
+
+    it('keeps registration closed when the server says clientRegistration is false', async () => {
+        mockGetConfig.mockResolvedValue({ data: { provider: 'ldap', directory: true, selfRegistration: false, passwordManagedLocally: false, clientRegistration: false } });
+        expect(await fetchAuthConfig()).toMatchObject({ selfRegistration: false, passwordManagedLocally: false });
+    });
+
     it('ignores an answer that is not a sign-in configuration', async () => {
         mockGetConfig.mockResolvedValue({ data: null });
         expect(await fetchAuthConfig()).toEqual(LOCAL_AUTH);

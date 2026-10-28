@@ -82,4 +82,34 @@ describe('LoginScreen', () => {
         expect(screen.queryByPlaceholderText('Enter your password')).not.toBeInTheDocument();
         expect(screen.queryByText('Register as Client')).not.toBeInTheDocument();
     });
+
+    it('entra mode with registration allowed: the Microsoft button AND a form for clients who registered', async () => {
+        serverSays({ provider: 'entra', loginMethod: 'microsoft', directory: true, selfRegistration: true, passwordManagedLocally: true });
+        mockLogin.mockResolvedValue({ success: true, message: 'Login successful', data: { user: { client_user_id: 4 }, accessToken: 'tok', refreshToken: 'ref' } });
+        render(<LoginScreen />);
+
+        expect(await screen.findByRole('link', { name: /sign in with microsoft/i })).toBeInTheDocument();
+        expect(screen.getByText('OR USE A REGISTERED ACCOUNT')).toBeInTheDocument();
+        expect(screen.getByText('EMAIL ADDRESS')).toBeInTheDocument();
+        expect(screen.getByText('Forgot password?')).toBeInTheDocument();
+        expect(screen.getByText('NOT IN THE DIRECTORY?')).toBeInTheDocument();
+        expect(screen.getByText('Register as Client')).toBeInTheDocument();
+
+        fireEvent.change(screen.getByPlaceholderText('your.email@dojcd.gov.za'), { target: { value: 'olive@chambers.example.org' } });
+        fireEvent.change(screen.getByPlaceholderText('Enter your password'), { target: { value: 'Str0ng-Pass-9x' } });
+        fireEvent.click(screen.getByRole('button', { name: /^sign in$/i }));
+        await waitFor(() => expect(mockLogin).toHaveBeenCalledWith({ email: 'olive@chambers.example.org', password: 'Str0ng-Pass-9x' }));
+    });
+
+    it('ldap mode with registration allowed: one form for both kinds of account, and the register card', async () => {
+        serverSays({ provider: 'ldap', loginMethod: 'password', directory: true, selfRegistration: true, passwordManagedLocally: true });
+        render(<LoginScreen />);
+
+        expect(await screen.findByText('USERNAME OR EMAIL')).toBeInTheDocument();
+        expect(screen.getByText('Forgot password?')).toBeInTheDocument();
+        expect(screen.getByText('NOT IN THE DIRECTORY?')).toBeInTheDocument();
+        expect(screen.getByText(/without an organisation account/i)).toBeInTheDocument();
+        expect(screen.queryByText(/nothing to register/i)).not.toBeInTheDocument();
+        expect(screen.queryByText('OR USE A REGISTERED ACCOUNT')).not.toBeInTheDocument();
+    });
 });
